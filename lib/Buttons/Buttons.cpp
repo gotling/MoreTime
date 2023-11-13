@@ -1,8 +1,12 @@
 #include <Buttons.h>
+
+#include <arduino-timer.h>
+
 #include <Display.h>
 #include <State.h>
 #include <Menu.h>
 #include <Counter.h>
+#include <StopWatch.h>
 
 Button btnA(BUTTON_A_PIN, minusCallback);   // Primary button.
 Button btnB(BUTTON_B_PIN, plusCallback);    // Secondary button.
@@ -16,18 +20,24 @@ Button *btns[] = {
 };
 ButtonList btnList(btns);  // List of button to control together.
 
+auto timer = timer_create_default();
+
 void buttonsSetup() {
   btnList.begin();  // ButtonList calls begin() for each button in the list.
 }
 
 void buttonsLoop() {
     btnList.handle();  // ButtonList calls handle() for each button in the list.
+    timer.tick();
 }
 
 void minusCallback(Button::CALLBACK_EVENT event, uint8_t id) {
   if (event == Button::PRESSED_EVENT) {
     Serial.println("Minus");
     minus();
+    timer.every(400, timer_minus);
+  } else if (event == Button::RELEASED_EVENT) {
+    timer.cancel();
   }
 }
 
@@ -35,6 +45,9 @@ void plusCallback(Button::CALLBACK_EVENT event, uint8_t id) {
   if (event == Button::PRESSED_EVENT) {
     Serial.println("Plus");
     plus();
+    timer.every(400, timer_plus);
+  } else if (event == Button::RELEASED_EVENT) {
+    timer.cancel();
   }
 }
 
@@ -69,11 +82,25 @@ void action() {
     counterAction();
   } else if (state.mode == Menu) {
     menuAction();
+  } else if (state.mode == StopWatch) {
+    stopWatchAction();
   }
 }
 
 void hold() {
   if (state.mode == Counter) {
     menuOpen();
+  } else if (state.mode == StopWatch) {
+    menuOpen();
   }
+}
+
+bool timer_minus(void *argument) {
+    minus();
+    return true;
+}
+
+bool timer_plus(void *argument) {
+    plus();
+    return true;
 }

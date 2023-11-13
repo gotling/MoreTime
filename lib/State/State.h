@@ -3,7 +3,7 @@
 
 enum Mode {
   Default = 0,
-  Timer = 1,
+  ModeTimer = 1,
   TimerPlus = 2,
   StopWatch = 3,
   Counter = 4,

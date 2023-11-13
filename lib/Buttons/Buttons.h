@@ -21,5 +21,7 @@ void plus();
 void minus();
 void action();
 void hold();
+bool timer_minus(void *argument);
+bool timer_plus(void *argument);
 
 #endif

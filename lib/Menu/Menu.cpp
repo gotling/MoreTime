@@ -2,6 +2,7 @@
 #include <Display.h>
 #include <State.h>
 #include <Counter.h>
+#include <StopWatch.h>
 
 MenuMode menuMode = MenuMenu;
 
@@ -34,6 +35,8 @@ void menuAction() {
 
   if (menuMode == MenuCounter)
     counterOpen();
+  else if (menuMode == MenuStopWatch)
+    stopWatchOpen();
 }
 
 void displayCurrent() {

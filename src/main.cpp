@@ -2,6 +2,7 @@
 
 #include <Display.h>
 #include <Buttons.h>
+#include <StopWatch.h>
 
 void setup() {
   Serial.begin(115200);
@@ -14,4 +15,5 @@ void setup() {
 
 void loop() {
   buttonsLoop();
+  stopWatchLoop();
 }
