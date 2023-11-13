@@ -17,5 +17,9 @@ extern void buttonsLoop();
 void minusCallback(Button::CALLBACK_EVENT event, uint8_t id);
 void plusCallback(Button::CALLBACK_EVENT event, uint8_t id);
 void actionCallback(Button::CALLBACK_EVENT event, uint8_t id);
+void plus();
+void minus();
+void action();
+void hold();
 
 #endif

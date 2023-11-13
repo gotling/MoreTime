@@ -14,8 +14,6 @@
 #define USE_LOCAL_FONT 1  // Use font from Font_Data.h
 #define BRIGHTNESS 2
 
-#define BUF_SIZE 50
-
 extern void displaySetup();
 extern void displayPrint(char* text);
 

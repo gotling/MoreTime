@@ -1,6 +1,8 @@
 #include <Buttons.h>
-
 #include <Display.h>
+#include <State.h>
+#include <Menu.h>
+#include <Counter.h>
 
 Button btnA(BUTTON_A_PIN, minusCallback);   // Primary button.
 Button btnB(BUTTON_B_PIN, plusCallback);    // Secondary button.
@@ -14,11 +16,6 @@ Button *btns[] = {
 };
 ButtonList btnList(btns);  // List of button to control together.
 
-// Display
-#define BUF_SIZE 8
-char message[BUF_SIZE];
-int counter = 0;
-
 void buttonsSetup() {
   btnList.begin();  // ButtonList calls begin() for each button in the list.
 }
@@ -30,26 +27,53 @@ void buttonsLoop() {
 void minusCallback(Button::CALLBACK_EVENT event, uint8_t id) {
   if (event == Button::PRESSED_EVENT) {
     Serial.println("Minus");
-    counter--;
-    sprintf(message, "%d", counter);
-    displayPrint(message);
+    minus();
   }
 }
 
 void plusCallback(Button::CALLBACK_EVENT event, uint8_t id) {
   if (event == Button::PRESSED_EVENT) {
     Serial.println("Plus");
-    counter++;
-    sprintf(message, "%d", counter);
-    displayPrint(message);
+    plus();
   }
 }
 
 void actionCallback(Button::CALLBACK_EVENT event, uint8_t id) {
   if (event == Button::PRESSED_EVENT) {
     Serial.println("Action");
-    counter = 0;
-    sprintf(message, "%d", counter);
-    displayPrint(message);
+    action();
+  } else if (event == Button::HELD_EVENT) {
+    Serial.println("Hold");
+    hold();
+  }
+}
+
+void minus() {
+  if (state.mode == Counter) {
+    counterMinus();
+  } else if (state.mode == Menu) {
+    menuMinus();
+  }
+}
+
+void plus() {
+  if (state.mode == Counter) {
+    counterPlus();
+  } else if (state.mode == Menu) {
+    menuPlus();
+  }
+}
+
+void action() {
+  if (state.mode == Counter) {
+    counterAction();
+  } else if (state.mode == Menu) {
+    menuAction();
+  }
+}
+
+void hold() {
+  if (state.mode == Counter) {
+    menuOpen();
   }
 }
