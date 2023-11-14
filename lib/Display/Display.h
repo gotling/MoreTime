@@ -16,5 +16,8 @@
 
 extern void displaySetup();
 extern void displayPrint(char* text);
+extern void displayFontWide();
+extern void displayFontThin();
+extern void displayFontDefault();
 
 #endif

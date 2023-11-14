@@ -9,6 +9,7 @@ MenuMode menuMode = MenuMenu;
 void menuOpen() {
   state.mode = Menu;
   menuMode = MenuMenu;
+  displayFontDefault();
   displayCurrent();
 }
 

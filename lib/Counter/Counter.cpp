@@ -6,6 +6,7 @@ void counterAction();
 
 void counterOpen() {
   state.mode = Counter;
+  displayFontWide();
   counterAction();
 }
 

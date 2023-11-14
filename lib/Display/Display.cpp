@@ -1,4 +1,5 @@
 #include <Display.h>
+#include <Font.h>
 
 MD_Parola myDisplay = MD_Parola(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
 
@@ -16,4 +17,16 @@ void displaySetup()
 
 void displayPrint(char* text) {
     myDisplay.print(text);
+}
+
+void displayFontWide() {
+    myDisplay.setFont(widefont);
+}
+
+void displayFontThin() {
+    myDisplay.setFont(thinfont);
+}
+
+void displayFontDefault() {
+    myDisplay.setFont(nullptr);
 }

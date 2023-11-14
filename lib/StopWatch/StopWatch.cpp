@@ -15,7 +15,7 @@ bool stopWatchDisplay(void *argument);
 void stopWatchOpen() {
   state.mode = StopWatch;
   previous = start = 0;
-
+  displayFontWide();
   stopWatchDisplay();
 }
 
