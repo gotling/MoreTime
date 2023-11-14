@@ -7,7 +7,8 @@ enum Mode {
   TimerPlus = 2,
   StopWatch = 3,
   Counter = 4,
-  Menu = 5
+  Menu = 5,
+  Time = 6
 };
 
 

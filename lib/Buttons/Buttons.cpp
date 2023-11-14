@@ -7,6 +7,7 @@
 #include <Menu.h>
 #include <Counter.h>
 #include <StopWatch.h>
+#include <MyTime.h>
 
 Button btnA(BUTTON_A_PIN, minusCallback);   // Primary button.
 Button btnB(BUTTON_B_PIN, plusCallback);    // Secondary button.
@@ -100,7 +101,8 @@ void hold() {
       menuOpen();
       stopWatchClose();
     }
-      
+  } else if (state.mode == Time) {
+    menuOpen();
   }
 }
 

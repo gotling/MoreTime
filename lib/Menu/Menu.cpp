@@ -3,6 +3,7 @@
 #include <State.h>
 #include <Counter.h>
 #include <StopWatch.h>
+#include <MyTime.h>
 
 MenuMode menuMode = MenuMenu;
 
@@ -15,7 +16,7 @@ void menuOpen() {
 
 void menuMinus() {
   if (menuMode == MenuMenu)
-    menuMode = MenuCounter;
+    menuMode = MenuTime;
   else
     menuMode = static_cast<MenuMode>((menuMode - 1));
   Serial.print("MenuMinus: ");
@@ -24,7 +25,7 @@ void menuMinus() {
 }
 
 void menuPlus() {
-  menuMode = static_cast<MenuMode>((menuMode + 1) % (MenuCounter + 1));
+  menuMode = static_cast<MenuMode>((menuMode + 1) % (MenuTime + 1));
   Serial.print("MenuPlus: ");
   Serial.println(menuMode);
   displayCurrent();
@@ -38,6 +39,8 @@ void menuAction() {
     counterOpen();
   else if (menuMode == MenuStopWatch)
     stopWatchOpen();
+  else if (menuMode == MenuTime)
+    timeOpen();
 }
 
 void displayCurrent() {
@@ -46,14 +49,17 @@ void displayCurrent() {
   case MenuMenu:
     displayPrint((char*)"Menu");
     break;
-  case MenuTimer:
-    displayPrint((char*)"Timer");
-    break;
+  // case MenuTimer:
+  //   displayPrint((char*)"Timer");
+  //   break;
   case MenuStopWatch:
     displayPrint((char*)"Stop Watch");
     break;
   case MenuCounter:
     displayPrint((char*)"Counter");
+    break;
+  case MenuTime:
+    displayPrint((char*)"Time");
     break;
   default:
     break;
