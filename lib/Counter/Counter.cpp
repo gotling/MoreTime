@@ -26,3 +26,7 @@ void counterAction() {
   sprintf(message, "%d", state.counter);
   displayPrint(message);
 }
+
+bool counterStarted() {
+  return state.counter != 0;
+}

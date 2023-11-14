@@ -5,5 +5,6 @@ extern void counterOpen();
 extern void counterMinus();
 extern void counterPlus();
 extern void counterAction();
+extern bool counterStarted();
 
 #endif

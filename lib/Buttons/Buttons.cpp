@@ -79,7 +79,6 @@ void plus() {
 
 void action() {
   if (state.mode == Counter) {
-    counterAction();
   } else if (state.mode == Menu) {
     menuAction();
   } else if (state.mode == StopWatch) {
@@ -89,9 +88,19 @@ void action() {
 
 void hold() {
   if (state.mode == Counter) {
-    menuOpen();
+    if (counterStarted()) {
+      counterAction();
+    } else {
+      menuOpen();
+    }
   } else if (state.mode == StopWatch) {
-    menuOpen();
+    if (stopWatchStarted()) {
+      stopWatchReset();
+    } else {
+      menuOpen();
+      stopWatchClose();
+    }
+      
   }
 }
 

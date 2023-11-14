@@ -6,18 +6,22 @@
 #include <State.h>
 
 auto stopWatchDisplayTimer = timer_create_default();
-auto stopWatchTickTimer = timer_create_default();
 
-int stopWatchSeconds = 0;
+unsigned long start = 0;
+unsigned long previous = 0;
 
 bool stopWatchDisplay(void *argument);
-bool stopWatchTick(void *argument);
 
 void stopWatchOpen() {
   state.mode = StopWatch;
-  stopWatchSeconds = 0;
+  previous = start = 0;
 
   stopWatchDisplay();
+}
+
+void stopWatchClose() {
+  stopWatchDisplayTimer.cancel();
+  previous = start = 0;
 }
 
 void stopWatchMinus() {
@@ -27,12 +31,12 @@ void stopWatchPlus() {
 }
 
 void stopWatchAction() {
-  if (stopWatchTickTimer.empty()) {
-    stopWatchDisplayTimer.every(500, stopWatchDisplayCallback);
-    stopWatchTickTimer.every(1000, stopWatchTickCallback);
+  if (stopWatchDisplayTimer.empty()) {
+    stopWatchDisplayTimer.every(100, stopWatchDisplayCallback);
+    start = millis();
   } else {
     stopWatchDisplayTimer.cancel();
-    stopWatchTickTimer.cancel();
+    previous = previous + (millis() - start);
   }
 }
 
@@ -41,26 +45,39 @@ void stopWatchLoop() {
     return;
   
   stopWatchDisplayTimer.tick();
-  stopWatchTickTimer.tick();
+}
+
+bool stopWatchStarted() {
+  return (start != 0) && (previous != 0);
+}
+
+void stopWatchReset() {
+  stopWatchDisplayTimer.cancel();
+  previous = start = 0;
+  stopWatchDisplay();
 }
 
 void stopWatchDisplay() {
-  if (stopWatchSeconds >= 3600) {
-    sprintf(message, "%02d:%02d", stopWatchSeconds / 3600, stopWatchSeconds % 3600 - stopWatchSeconds % 60);
-  } else if (stopWatchSeconds >= 600) {
-    sprintf(message, "%02d:%02d", stopWatchSeconds / 60, stopWatchSeconds % 60);
-  } else if (stopWatchSeconds >= 60) {
-    sprintf(message, "%d:%02d", stopWatchSeconds / 60, stopWatchSeconds % 60);
+  if (start == 0) {
+    displayPrint((char*)"-.-");
+    return;
+  }
+
+  unsigned long now = millis();
+  unsigned long diff = now - start + previous;
+  unsigned int seconds = diff / 1000;
+
+  if (seconds >= 3600) {
+    sprintf(message, "%02d:%02d", seconds / 3600, seconds % 3600 - seconds % 60);
+  } else if (seconds >= 600) {
+    sprintf(message, "%02d:%02d", seconds / 60, seconds % 60);
+  } else if (seconds >= 60) {
+    sprintf(message, "%d:%02d", seconds / 60, seconds % 60);
   } else {
-    sprintf(message, "%d", stopWatchSeconds);
+    sprintf(message, "%.1f", (float)diff / 1000);
   }
 
   displayPrint(message);
-}
-
-bool stopWatchTickCallback(void *argument) {
-  stopWatchSeconds++;
-  return true;
 }
 
 bool stopWatchDisplayCallback(void *argument) {
