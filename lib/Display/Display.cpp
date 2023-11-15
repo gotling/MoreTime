@@ -19,6 +19,10 @@ void displayPrint(char* text) {
     myDisplay.print(text);
 }
 
+void displayAlign(enum textPosition_t position) {
+    myDisplay.setTextAlignment(position);
+}
+
 void displayFontWide() {
     myDisplay.setFont(widefont);
 }

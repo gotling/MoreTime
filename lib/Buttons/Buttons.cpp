@@ -75,32 +75,29 @@ void plus() {
     counterPlus();
   } else if (state.mode == Menu) {
     menuPlus();
+  } else if (state.mode == StopWatch) {
+    stopWatchPlus();
   }
 }
 
 void action() {
   if (state.mode == Counter) {
+    counterAction();
   } else if (state.mode == Menu) {
     menuAction();
   } else if (state.mode == StopWatch) {
     stopWatchAction();
+  } else if (state.mode == Time) {
+    menuOpen();
   }
 }
 
 void hold() {
   if (state.mode == Counter) {
-    if (counterStarted()) {
-      counterAction();
-    } else {
-      menuOpen();
-    }
+    menuOpen();
   } else if (state.mode == StopWatch) {
-    if (stopWatchStarted()) {
-      stopWatchReset();
-    } else {
-      menuOpen();
-      stopWatchClose();
-    }
+    menuOpen();
+    stopWatchClose();
   } else if (state.mode == Time) {
     menuOpen();
   }

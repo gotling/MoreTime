@@ -16,6 +16,7 @@
 
 extern void displaySetup();
 extern void displayPrint(char* text);
+extern void displayAlign(enum textPosition_t);
 extern void displayFontWide();
 extern void displayFontThin();
 extern void displayFontDefault();

@@ -28,9 +28,6 @@ void stopWatchMinus() {
 }
 
 void stopWatchPlus() {
-}
-
-void stopWatchAction() {
   if (stopWatchDisplayTimer.empty()) {
     stopWatchDisplayTimer.every(100, stopWatchDisplayCallback);
     start = millis();
@@ -38,6 +35,10 @@ void stopWatchAction() {
     stopWatchDisplayTimer.cancel();
     previous = previous + (millis() - start);
   }
+}
+
+void stopWatchAction() {
+  stopWatchReset();
 }
 
 void stopWatchLoop() {
@@ -59,7 +60,10 @@ void stopWatchReset() {
 
 void stopWatchDisplay() {
   if (start == 0) {
-    displayPrint((char*)"-.-");
+    sprintf(message, " %c", 255);
+    displayAlign(PA_LEFT);
+    displayPrint(message);
+    displayAlign(PA_CENTER);
     return;
   }
 
