@@ -1,21 +1,34 @@
 #include <Menu.h>
+
+#include <arduino-timer.h>
+
 #include <Display.h>
 #include <State.h>
 #include <Counter.h>
 #include <StopWatch.h>
 #include <MyTime.h>
 
-MenuMode menuMode = MenuMenu;
+MenuMode menuMode = MenuStopWatch;
+
+auto menuIdleTimer = timer_create_default();
 
 void menuOpen() {
   state.mode = Menu;
-  menuMode = MenuMenu;
+  menuMode = MenuStopWatch;
   displayFontDefault();
   displayCurrent();
+
+  resetIdleTimer();
+}
+
+void resetIdleTimer() {
+  menuIdleTimer.cancel();
+  menuIdleTimer.in(10000, menuIdleCallback);
 }
 
 void menuMinus() {
-  if (menuMode == MenuMenu)
+  resetIdleTimer();
+  if (menuMode == MenuStopWatch)
     menuMode = MenuTime;
   else
     menuMode = static_cast<MenuMode>((menuMode - 1));
@@ -25,6 +38,7 @@ void menuMinus() {
 }
 
 void menuPlus() {
+  resetIdleTimer();
   menuMode = static_cast<MenuMode>((menuMode + 1) % (MenuTime + 1));
   Serial.print("MenuPlus: ");
   Serial.println(menuMode);
@@ -46,9 +60,9 @@ void menuAction() {
 void displayCurrent() {
   switch (menuMode)
   {
-  case MenuMenu:
-    displayPrint((char*)"Menu");
-    break;
+  // case MenuMenu:
+  //   displayPrint((char*)"Menu");
+  //   break;
   // case MenuTimer:
   //   displayPrint((char*)"Timer");
   //   break;
@@ -64,4 +78,16 @@ void displayCurrent() {
   default:
     break;
   }
+}
+
+bool menuIdleCallback(void *argument) {
+  timeOpen();
+  return true;
+}
+
+void menuLoop() {
+  if (state.mode != Menu)
+    return;
+  
+  menuIdleTimer.tick();
 }

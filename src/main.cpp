@@ -6,6 +6,7 @@
 #include <Network.h>
 #include <NTP.h>
 #include <MyTime.h>
+#include <Menu.h>
 
 void setup() {
   Serial.begin(115200);
@@ -26,4 +27,5 @@ void loop() {
   networkLoop();
   ntpLoop();
   timeLoop();
+  menuLoop();
 }

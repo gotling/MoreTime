@@ -2,10 +2,9 @@
 #define _MENU_H_
 
 enum MenuMode {
-  MenuMenu = 0,
-  MenuStopWatch = 1,
-  MenuCounter = 2,
-  MenuTime = 3,
+  MenuStopWatch = 0,
+  MenuCounter = 1,
+  MenuTime = 2,
   //MenuTimer = 4
 };
 
@@ -14,5 +13,8 @@ extern void menuMinus();
 extern void menuPlus();
 extern void menuAction();
 void displayCurrent();
+void resetIdleTimer();
+bool menuIdleCallback(void *argument);
+void menuLoop();
 
 #endif
