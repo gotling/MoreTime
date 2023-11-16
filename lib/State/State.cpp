@@ -8,3 +8,4 @@ State state = {
 };
 
 char message[BUF_SIZE];
+char oldMessage[BUF_SIZE];

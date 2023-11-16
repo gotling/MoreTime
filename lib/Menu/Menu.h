@@ -2,6 +2,7 @@
 #define _MENU_H_
 
 enum MenuMode {
+  Undefind = -1,
   MenuStopWatch = 0,
   MenuCounter = 1,
   MenuTime = 2,

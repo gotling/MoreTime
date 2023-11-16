@@ -15,7 +15,17 @@ void displaySetup()
     myDisplay.print("TiME");
 }
 
+void displayLoop() {
+    myDisplay.displayAnimate();
+}
+
 void displayPrint(char* text) {
+    myDisplay.setTextAlignment(PA_CENTER);
+    myDisplay.print(text);
+}
+
+void displayPrintLeft(char* text) {
+    myDisplay.setTextAlignment(PA_LEFT);
     myDisplay.print(text);
 }
 

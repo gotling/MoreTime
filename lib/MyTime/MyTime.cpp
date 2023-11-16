@@ -32,8 +32,10 @@ void timeAction() {
 }
 
 void timeDisplay() {
-  sprintf(message, "%02d:%02d", ntpHour(), ntpMinute());
-  displayPrint(message);
+  if (ntpTimeSet()) {
+    sprintf(message, "%02d:%02d", ntpHour(), ntpMinute());
+    displayPrint(message);
+  }
 }
 
 bool timeDisplayCallback(void *argument) {

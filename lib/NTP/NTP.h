@@ -3,7 +3,7 @@
 
 extern void ntpSetup();
 extern void ntpLoop();
-
+extern bool ntpTimeSet();
 extern int ntpHour();
 extern int ntpMinute();
 

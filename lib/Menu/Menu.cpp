@@ -8,13 +8,15 @@
 #include <StopWatch.h>
 #include <MyTime.h>
 
-MenuMode menuMode = MenuStopWatch;
+MenuMode menuMode = Undefind;
 
 auto menuIdleTimer = timer_create_default();
 
 void menuOpen() {
   state.mode = Menu;
-  menuMode = MenuStopWatch;
+  if ((menuMode == Undefind) || (menuMode == MenuTime))
+    menuMode = MenuStopWatch;
+  
   displayFontDefault();
   displayCurrent();
 
@@ -67,17 +69,19 @@ void displayCurrent() {
   //   displayPrint((char*)"Timer");
   //   break;
   case MenuStopWatch:
-    displayPrint((char*)"Stop Watch");
+    sprintf(message, "Chrono");
     break;
   case MenuCounter:
-    displayPrint((char*)"Counter");
+    sprintf(message, "Counter");
     break;
   case MenuTime:
-    displayPrint((char*)"Time");
+    sprintf(message, "Time");
     break;
   default:
+    sprintf(message, "Unknown");
     break;
   }
+  displayPrint(message);
 }
 
 bool menuIdleCallback(void *argument) {

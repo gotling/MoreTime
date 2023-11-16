@@ -7,6 +7,7 @@ extern void stopWatchMinus();
 extern void stopWatchPlus();
 extern void stopWatchAction();
 extern void stopWatchLoop();
+extern void stopWatchStart();
 extern bool stopWatchStarted();
 extern void stopWatchReset();
 

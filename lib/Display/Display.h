@@ -15,7 +15,9 @@
 #define BRIGHTNESS 2
 
 extern void displaySetup();
+extern void displayLoop();
 extern void displayPrint(char* text);
+extern void displayPrintLeft(char* text);
 extern void displayAlign(enum textPosition_t);
 extern void displayFontWide();
 extern void displayFontThin();

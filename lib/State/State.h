@@ -21,5 +21,6 @@ extern State state;
 
 #define BUF_SIZE 12
 extern char message[BUF_SIZE];
+extern char oldMessage[BUF_SIZE];
 
 #endif

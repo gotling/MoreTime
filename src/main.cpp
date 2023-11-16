@@ -28,4 +28,5 @@ void loop() {
   ntpLoop();
   timeLoop();
   menuLoop();
+  displayLoop();
 }

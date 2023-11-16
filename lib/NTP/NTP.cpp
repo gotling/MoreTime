@@ -13,6 +13,10 @@ void ntpLoop() {
     timeClient.update();
 }
 
+bool ntpTimeSet() {
+    return timeClient.isTimeSet();
+}
+
 int ntpHour() {
     return timeClient.getHours();
 }
