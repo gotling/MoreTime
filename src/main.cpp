@@ -7,6 +7,7 @@
 #include <NTP.h>
 #include <MyTime.h>
 #include <Menu.h>
+#include <Timer.h>
 
 void setup() {
   Serial.begin(115200);
@@ -28,5 +29,6 @@ void loop() {
   ntpLoop();
   timeLoop();
   menuLoop();
+  timerLoop();
   displayLoop();
 }

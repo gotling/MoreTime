@@ -28,6 +28,9 @@
 
 #include <Network.h>
 
+#include <State.h>
+#include <Display.h>
+
 #if !( defined(ESP8266) ||  defined(ESP32) )
   #error This code is intended to run on the ESP8266 or ESP32 platform! Please check your Tools->Board setting.
 #endif
@@ -768,17 +771,10 @@ void saveConfigData()
 
 void networkSetup()
 {
-  //set led pin as output
-  //pinMode(LED_BUILTIN, OUTPUT);
-
-  //pinMode(TRIGGER_PIN, INPUT_PULLUP);
-  //pinMode(TRIGGER_PIN2, INPUT_PULLUP);
-
-//   Serial.begin(115200);
-
-//   while (!Serial);
-
   delay(200);
+
+  sprintf(message, "WiFi");
+  displayPrint(message);
 
   Serial.print(F("\nStarting Async_ConfigOnSwitch using "));
   Serial.print(FS_Name);

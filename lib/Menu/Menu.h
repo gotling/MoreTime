@@ -4,9 +4,9 @@
 enum MenuMode {
   Undefind = -1,
   MenuStopWatch = 0,
-  MenuCounter = 1,
-  MenuTime = 2,
-  //MenuTimer = 4
+  MenuTimer = 1,
+  MenuCounter = 2,
+  MenuTime = 3
 };
 
 extern void menuOpen();

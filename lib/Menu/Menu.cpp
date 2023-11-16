@@ -7,6 +7,7 @@
 #include <Counter.h>
 #include <StopWatch.h>
 #include <MyTime.h>
+#include <Timer.h>
 
 MenuMode menuMode = Undefind;
 
@@ -55,6 +56,8 @@ void menuAction() {
     counterOpen();
   else if (menuMode == MenuStopWatch)
     stopWatchOpen();
+  else if (menuMode == MenuTimer)
+    timerOpen();
   else if (menuMode == MenuTime)
     timeOpen();
 }
@@ -62,14 +65,11 @@ void menuAction() {
 void displayCurrent() {
   switch (menuMode)
   {
-  // case MenuMenu:
-  //   displayPrint((char*)"Menu");
-  //   break;
-  // case MenuTimer:
-  //   displayPrint((char*)"Timer");
-  //   break;
   case MenuStopWatch:
     sprintf(message, "Chrono");
+    break;
+  case MenuTimer:
+    sprintf(message, "Timer");
     break;
   case MenuCounter:
     sprintf(message, "Counter");

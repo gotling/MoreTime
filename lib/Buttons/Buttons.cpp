@@ -8,6 +8,7 @@
 #include <Counter.h>
 #include <StopWatch.h>
 #include <MyTime.h>
+#include <Timer.h>
 
 Button btnA(BUTTON_A_PIN, minusCallback);   // Primary button.
 Button btnB(BUTTON_B_PIN, plusCallback);    // Secondary button.
@@ -67,6 +68,8 @@ void minus() {
     counterMinus();
   } else if (state.mode == Menu) {
     menuMinus();
+  } else if (state.mode == MyTimer) {
+    timerMinus();
   }
 }
 
@@ -77,6 +80,8 @@ void plus() {
     menuPlus();
   } else if (state.mode == StopWatch) {
     stopWatchPlus();
+  } else if (state.mode == MyTimer) {
+    timerPlus();
   }
 }
 
@@ -95,6 +100,9 @@ void action() {
       menuOpen();
   } else if (state.mode == Time) {
     menuOpen();
+  } else if (state.mode == MyTimer) {
+    if (!timerAction())
+      menuOpen();
   }
 }
 
@@ -106,6 +114,9 @@ void hold() {
     menuOpen();
   } else if (state.mode == Time) {
     menuOpen();
+  } else if (state.mode == MyTimer) {
+    if (!timerHold())
+      menuOpen();
   }
 }
 

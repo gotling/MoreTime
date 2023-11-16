@@ -3,14 +3,13 @@
 
 enum Mode {
   Default = 0,
-  ModeTimer = 1,
+  MyTimer = 1,
   TimerPlus = 2,
   StopWatch = 3,
   Counter = 4,
   Menu = 5,
   Time = 6
 };
-
 
 struct State { 
     Mode mode;
