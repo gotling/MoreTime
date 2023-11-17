@@ -90,33 +90,33 @@ void action() {
     if (counterStarted())
       counterAction();
     else
-      menuOpen();
+      timeOpen();
   } else if (state.mode == Menu) {
     menuAction();
   } else if (state.mode == StopWatch) {
     if (stopWatchStarted())
       stopWatchAction();
     else
-      menuOpen();
+      timeOpen();
   } else if (state.mode == Time) {
     menuOpen();
   } else if (state.mode == MyTimer) {
     if (!timerAction())
-      menuOpen();
+      timeOpen();
   }
 }
 
 void hold() {
   if (state.mode == Counter) {
-    menuOpen();
+    timeOpen();
   } else if (state.mode == StopWatch) {
     stopWatchClose();
-    menuOpen();
+    timeOpen();
   } else if (state.mode == Time) {
     menuOpen();
   } else if (state.mode == MyTimer) {
     if (!timerHold())
-      menuOpen();
+      timeOpen();
   }
 }
 
