@@ -4,6 +4,7 @@
 
 #include <Display.h>
 #include <State.h>
+#include <Piezo.h>
 
 auto timerDisplayTimer = timer_create_default();
 
@@ -107,6 +108,10 @@ void timerDisplay() {
   }
 
   int seconds = secondsLeft();
+
+  if (seconds == 0) {
+    piezoPlay();
+  }
 
   if (seconds >= 0)
     sprintf(message, "%d:%02d", seconds / 60, seconds % 60);

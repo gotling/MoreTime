@@ -8,6 +8,7 @@
 #include <MyTime.h>
 #include <Menu.h>
 #include <Timer.h>
+#include <Piezo.h>
 
 void setup() {
   Serial.begin(115200);
@@ -17,6 +18,7 @@ void setup() {
   buttonsSetup();
   networkSetup();
   ntpSetup();
+  piezoSetup();
 
   Serial.println("TiME started");
   timeOpen();
@@ -31,4 +33,5 @@ void loop() {
   menuLoop();
   timerLoop();
   displayLoop();
+  piezoLoop();
 }
