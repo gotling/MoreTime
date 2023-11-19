@@ -3,6 +3,9 @@
 
 MD_Parola myDisplay = MD_Parola(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
 
+char message[BUF_SIZE];
+char oldMessage[BUF_SIZE];
+
 void displaySetup()
 {
     myDisplay.begin();
