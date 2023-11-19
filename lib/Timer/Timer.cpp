@@ -100,6 +100,10 @@ int secondsLeft() {
   return timerSeconds - diff;
 }
 
+void timerSetTime(unsigned int seconds) {
+  timerSeconds = seconds;
+}
+
 void timerDisplay() {
   if (!active) {
     sprintf(message, "%d:%02d", timerSeconds / 60, timerSeconds % 60);

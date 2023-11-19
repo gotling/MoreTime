@@ -13,6 +13,7 @@ extern void timerLoop();
 extern void timerStart();
 extern bool timerStarted();
 extern void timerReset();
+extern void timerSetTime(unsigned int seconds);
 
 int secondsLeft();
 void timerDisplay();
