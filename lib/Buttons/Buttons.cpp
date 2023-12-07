@@ -10,6 +10,7 @@
 #include <MyTime.h>
 #include <Timer.h>
 #include <Piezo.h>
+#include <Message.h>
 
 Button btnA(BUTTON_A_PIN, minusCallback);   // Primary button.
 Button btnB(BUTTON_B_PIN, plusCallback);    // Secondary button.
@@ -72,7 +73,9 @@ void minus() {
   } else if (state.mode == MyTimer) {
     timerMinus();
   } else if (state.mode == Time) {
-    piezoPlay();
+    messageOpen();
+  } else if (state.mode == Message) {
+    messageMinus();
   }
 }
 
@@ -85,6 +88,10 @@ void plus() {
     stopWatchPlus();
   } else if (state.mode == MyTimer) {
     timerPlus();
+  } else if (state.mode == Time) {
+    messageOpen();
+  } else if (state.mode == Message) {
+    messagePlus();
   }
 }
 
@@ -106,6 +113,8 @@ void action() {
   } else if (state.mode == MyTimer) {
     if (!timerAction())
       timeOpen();
+  } else if (state.mode == Message) {
+    timeOpen();
   }
 }
 

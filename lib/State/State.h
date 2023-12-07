@@ -8,7 +8,8 @@ enum Mode {
   StopWatch = 3,
   Counter = 4,
   Menu = 5,
-  Time = 6
+  Time = 6,
+  Message = 7
 };
 
 struct State { 

@@ -10,6 +10,7 @@
 #include <Timer.h>
 #include <Piezo.h>
 #include <_MQTT.h>
+#include <Message.h>
 
 void setup() {
   Serial.begin(115200);
@@ -37,4 +38,5 @@ void loop() {
   displayLoop();
   piezoLoop();
   mqttLoop();
+  messageLoop();
 }

@@ -5,6 +5,7 @@
 #include <ESP8266WiFi.h>
 #include <MQTT.h>
 #include <Timer.h>
+#include <Message.h>
 
 WiFiClient net;
 MQTTClient client;
@@ -56,6 +57,7 @@ void messageReceived(String &topic, String &payload) {
 
   if (topic == "more-time/message") {
     Serial.println("Message");
+    messageAdd(payload);
   } else if (topic == "more-time/timer") {
     Serial.println("Timer");
     timerOpen();
