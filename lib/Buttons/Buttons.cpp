@@ -38,7 +38,7 @@ void minusCallback(Button::CALLBACK_EVENT event, uint8_t id) {
   if (event == Button::PRESSED_EVENT) {
     Serial.println("Minus");
     minus();
-    timer.every(400, timer_minus);
+    timer.every(250, timer_minus);
   } else if (event == Button::RELEASED_EVENT) {
     timer.cancel();
   }
@@ -48,7 +48,7 @@ void plusCallback(Button::CALLBACK_EVENT event, uint8_t id) {
   if (event == Button::PRESSED_EVENT) {
     Serial.println("Plus");
     plus();
-    timer.every(400, timer_plus);
+    timer.every(250, timer_plus);
   } else if (event == Button::RELEASED_EVENT) {
     timer.cancel();
   }
