@@ -22,6 +22,9 @@ void messageAdd(String &message) {
   deserializeJson(doc, message);
 
   short index = doc["position"];
+  if ((index < 0) || (index > 3))
+    return;
+  
   messages[index] = doc["value"].as<String>();
 
   if ((state.mode == Message) && (index == messageDisplayIndex))
