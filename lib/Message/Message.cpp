@@ -23,6 +23,9 @@ void messageAdd(String &message) {
 
   short index = doc["position"];
   messages[index] = doc["value"].as<String>();
+
+  if ((state.mode == Message) && (index == messageDisplayIndex))
+    messageDisplay();
 }
 
 void messageSetup() {
