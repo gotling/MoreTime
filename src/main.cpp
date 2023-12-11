@@ -11,6 +11,7 @@
 #include <Piezo.h>
 #include <_MQTT.h>
 #include <Message.h>
+#include <Chess.h>
 
 void setup() {
   Serial.begin(115200);
@@ -22,6 +23,7 @@ void setup() {
   ntpSetup();
   piezoSetup();
   mqttSetup();
+  chessSetup();
 
   Serial.println("TiME started");
   timeOpen();
@@ -39,4 +41,5 @@ void loop() {
   piezoLoop();
   mqttLoop();
   messageLoop();
+  chessLoop();
 }

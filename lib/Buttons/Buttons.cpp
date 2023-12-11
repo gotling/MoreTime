@@ -11,6 +11,7 @@
 #include <Timer.h>
 #include <Piezo.h>
 #include <Message.h>
+#include <Chess.h>
 
 Button btnA(BUTTON_A_PIN, minusCallback);   // Primary button.
 Button btnB(BUTTON_B_PIN, plusCallback);    // Secondary button.
@@ -76,6 +77,8 @@ void minus() {
     messageOpen();
   } else if (state.mode == Message) {
     messageMinus();
+  } else if (state.mode == Chess) {
+    chessMinus();
   }
 }
 
@@ -92,6 +95,8 @@ void plus() {
     messageOpen();
   } else if (state.mode == Message) {
     messagePlus();
+  } else if (state.mode == Chess) {
+    chessPlus();
   }
 }
 
@@ -115,6 +120,9 @@ void action() {
       timeOpen();
   } else if (state.mode == Message) {
     timeOpen();
+  } else if (state.mode == Chess) {
+    if (!chessAction())
+      timeOpen();
   }
 }
 
@@ -128,6 +136,9 @@ void hold() {
     menuOpen();
   } else if (state.mode == MyTimer) {
     if (!timerHold())
+      timeOpen();
+  } else if (state.mode == Chess) {
+    if (!chessHold())
       timeOpen();
   }
 }

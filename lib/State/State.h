@@ -9,7 +9,8 @@ enum Mode {
   Counter = 4,
   Menu = 5,
   Time = 6,
-  Message = 7
+  Message = 7,
+  Chess = 8
 };
 
 struct State { 
