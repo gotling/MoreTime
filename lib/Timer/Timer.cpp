@@ -117,10 +117,15 @@ void timerDisplay() {
     piezoPlay();
   }
 
-  if (seconds >= 0)
+  if (seconds >= 0) {
     sprintf(message, "%d:%02d", seconds / 60, seconds % 60);
-  else {
-
+  } else if (seconds <= -3600) {
+    displayFontThin();
+    sprintf(message, "+%d:%02d:%02d", -1 * seconds / 3600, -1 * (seconds % 3600) / 60, -1 * seconds % 60);
+  } else if (seconds <= -600) {
+    displayFontThin();
+    sprintf(message, "+%02d:%02d", -1 * (seconds % 3600) / 60, -1 * seconds % 60);
+  } else {
     sprintf(message, "+%d:%02d", -1 * seconds / 60, -1 * seconds % 60);
   }
 
