@@ -7,8 +7,8 @@ auto piezoTimer = timer_create_default();
 unsigned long nextTone = 0;
 bool piezoActive = false;
 
-double toneFrequency[] = {1319, 0, 1319, 0, 1568, 0, 1047, 0};
-double toneLength[] =    {150, 20, 150, 20, 150, 20, 200, 1000};
+double toneFrequency[] = {2000, 0, 2000, 0, 3000, 0, 2000, 0};
+double toneLength[] =    {100, 20, 100, 20, 100, 20, 200, 500};
 unsigned int toneCount = sizeof(toneFrequency)/sizeof(double);
 unsigned int tonePosition = 0;
 unsigned int piezoRepeat = 3;
