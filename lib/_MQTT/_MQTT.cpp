@@ -10,6 +10,8 @@
 WiFiClient net;
 MQTTClient client;
 
+short retry_connect = 0;
+
 void messageReceived(String &topic, String &payload);
 
 void mqttSetup() {
@@ -45,6 +47,10 @@ void connect() {
   while (!client.connect("MoreTime", "public", "public")) {
     Serial.print(".");
     delay(1000);
+    retry_connect++;
+
+    if (retry_connect > 10)
+      break;
   }
 
   Serial.println("\nConnected!");
