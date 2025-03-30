@@ -12,6 +12,7 @@
 #include <Piezo.h>
 #include <Message.h>
 #include <Chess.h>
+#include <Rice.h>
 
 #define REPEAT_MS 250
 short repeat_ms = REPEAT_MS;
@@ -83,6 +84,8 @@ void minus() {
     messageMinus();
   } else if (state.mode == Chess) {
     chessMinus();
+  } else if (state.mode == Rice) {
+    riceMinus();
   }
 }
 
@@ -101,6 +104,8 @@ void plus() {
     messagePlus();
   } else if (state.mode == Chess) {
     chessPlus();
+  } else if (state.mode == Rice) {
+    ricePlus();
   }
 }
 
@@ -127,6 +132,13 @@ void action() {
   } else if (state.mode == Chess) {
     if (!chessAction())
       timeOpen();
+  } else if (state.mode == Rice) {
+    if (riceStarted())
+      riceAction();
+    else {
+      riceClose();
+      timeOpen();
+    }
   }
 }
 
@@ -144,7 +156,10 @@ void hold() {
   } else if (state.mode == Chess) {
     if (!chessHold())
       timeOpen();
-  }
+  } else if (state.mode == Rice) {
+    riceClose();
+    timeOpen();
+  } 
 }
 
 void reset_repeat() {

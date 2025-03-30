@@ -7,7 +7,8 @@ enum MenuMode {
   MenuTimer = 1,
   MenuCounter = 2,
   MenuTime = 3,
-  MenuChess = 4
+  MenuChess = 4,
+  MenuRice = 5
 };
 
 extern void menuOpen();

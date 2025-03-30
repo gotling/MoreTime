@@ -12,6 +12,7 @@
 #include <_MQTT.h>
 #include <Message.h>
 #include <Chess.h>
+#include <Rice.h>
 
 void setup() {
   Serial.begin(115200);
@@ -24,6 +25,7 @@ void setup() {
   piezoSetup();
   mqttSetup();
   chessSetup();
+  riceSetup();
 
   Serial.println("TiME started");
   timeOpen();
@@ -42,4 +44,5 @@ void loop() {
   mqttLoop();
   messageLoop();
   chessLoop();
+  riceLoop();
 }

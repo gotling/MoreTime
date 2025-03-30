@@ -10,12 +10,14 @@ enum Mode {
   Menu = 5,
   Time = 6,
   Message = 7,
-  Chess = 8
+  Chess = 8,
+  Rice = 9
 };
 
 struct State { 
     Mode mode;
     int counter;
+    int rice;
 };
 
 extern State state;

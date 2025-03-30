@@ -9,6 +9,7 @@
 #include <MyTime.h>
 #include <Timer.h>
 #include <Chess.h>
+#include <Rice.h>
 
 MenuMode menuMode = Undefind;
 
@@ -33,7 +34,7 @@ void resetIdleTimer() {
 void menuMinus() {
   resetIdleTimer();
   if (menuMode == MenuStopWatch)
-    menuMode = MenuChess;
+    menuMode = MenuRice;
   else
     menuMode = static_cast<MenuMode>((menuMode - 1));
   Serial.print("MenuMinus: ");
@@ -43,7 +44,7 @@ void menuMinus() {
 
 void menuPlus() {
   resetIdleTimer();
-  menuMode = static_cast<MenuMode>((menuMode + 1) % (MenuChess + 1));
+  menuMode = static_cast<MenuMode>((menuMode + 1) % (MenuRice + 1));
   Serial.print("MenuPlus: ");
   Serial.println(menuMode);
   displayCurrent();
@@ -63,6 +64,8 @@ void menuAction() {
     timeOpen();
   else if (menuMode == MenuChess)
     chessOpen();
+  else if (menuMode == MenuRice)
+    riceOpen();
 }
 
 void displayCurrent() {
@@ -82,6 +85,9 @@ void displayCurrent() {
     break;
   case MenuChess:
     sprintf(message, "Chess");
+    break;
+  case MenuRice:
+    sprintf(message, "Rice");
     break;
   default:
     sprintf(message, "Unknown");
