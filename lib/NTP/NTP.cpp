@@ -3,7 +3,7 @@
 
 WiFiUDP ntpUDP;
 
-NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 3600, 600000);
+NTPClient timeClient(ntpUDP, "europe.pool.ntp.org", 7200, 600000);
 
 void ntpSetup() {
     timeClient.begin();
