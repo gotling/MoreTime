@@ -79,7 +79,8 @@ void minus() {
   } else if (state.mode == MyTimer) {
     timerMinus();
   } else if (state.mode == Time) {
-    messageOpen();
+    // messageOpen();
+    riceOpen();
   } else if (state.mode == Message) {
     messageMinus();
   } else if (state.mode == Chess) {
