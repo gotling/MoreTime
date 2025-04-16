@@ -10,6 +10,7 @@ bool riceDisplay(void *argument);
 
 unsigned short alternate = 1;
 
+const float step = 0.5;
 const short WATER_MULTIPLIER = 180;
 const short RICE_MULTIPLIER = 100;
 
@@ -37,22 +38,22 @@ void riceLoop() {
 }
 
 void riceMinus() {
-  if (state.rice == 1)
+  if (state.rice == step)
     return;
+
+  riceDisplayTimer.cancel();
   
-  state.rice--;
+  state.rice -= step;
   alternate = 1;
-  displayFontWide();
-  sprintf(message, "%d", state.rice);
-  displayPrint(message);
+  riceStart();
 }
 
 void ricePlus() {
-  state.rice++;
+  riceDisplayTimer.cancel();
+
+  state.rice += step;
   alternate = 1;
-  displayFontWide();
-  sprintf(message, "%d", state.rice);
-  displayPrint(message);
+  riceStart();
 }
 
 void riceAction() {}
@@ -60,7 +61,7 @@ void riceAction() {}
 void riceStart() {
   if (riceDisplayTimer.empty()) {
     riceDisplay();
-    riceDisplayTimer.every(2000, riceDisplayCallback);
+    riceDisplayTimer.every(1500, riceDisplayCallback);
   } else {
     riceDisplayTimer.cancel();
   }
@@ -87,7 +88,7 @@ void riceDisplay() {
   } else if (alternate == 1) {
     alternate++;
     displayFontWide();
-    sprintf(message, "%d", state.rice);
+    sprintf(message, "%.1f", state.rice);
   } else if (alternate == 2) {
     alternate++;
     displayFontDefault();
@@ -95,7 +96,7 @@ void riceDisplay() {
   } else if (alternate == 3) {
     alternate++;
     displayFontWide();
-    sprintf(message, "%d", state.rice * RICE_MULTIPLIER);
+    sprintf(message, "%.0f", state.rice * RICE_MULTIPLIER);
   } else if (alternate == 4) {
     alternate++;
     displayFontDefault();
@@ -103,7 +104,7 @@ void riceDisplay() {
   } else if (alternate == 5) {
     alternate = 0;
     displayFontWide();
-    sprintf(message, "%d", state.rice * WATER_MULTIPLIER);
+    sprintf(message, "%.0f", state.rice * WATER_MULTIPLIER);
   }
 
   displayPrint(message);

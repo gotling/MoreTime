@@ -17,7 +17,7 @@ enum Mode {
 struct State { 
     Mode mode;
     int counter;
-    int rice;
+    float rice;
 };
 
 extern State state;
