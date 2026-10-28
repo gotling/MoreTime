@@ -9,7 +9,8 @@ enum MenuMode {
   MenuTime = 3,
   MenuChess = 4,
   MenuRice = 5,
-  MenuHum = 6
+  MenuSound = 6,
+  MenuHum = 7
 };
 
 extern void menuOpen();

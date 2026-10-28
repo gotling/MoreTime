@@ -11,6 +11,7 @@
 #include <Chess.h>
 #include <Rice.h>
 #include <Hum.h>
+#include <Sound.h>
 
 MenuMode menuMode = Undefind;
 
@@ -67,6 +68,8 @@ void menuAction() {
     chessOpen();
   else if (menuMode == MenuRice)
     riceOpen();
+  else if (menuMode == MenuSound)
+    soundOpen();
   else if (menuMode == MenuHum)
     humOpen();
 }
@@ -91,6 +94,9 @@ void displayCurrent() {
     break;
   case MenuRice:
     snprintf(message, BUF_SIZE, "Rice");
+    break;
+  case MenuSound:
+    snprintf(message, BUF_SIZE, "Sound");
     break;
   case MenuHum:
     snprintf(message, BUF_SIZE, "Hum");

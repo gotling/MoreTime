@@ -14,6 +14,7 @@
 #include <Chess.h>
 #include <Rice.h>
 #include <Hum.h>
+#include <Sound.h>
 
 #define REPEAT_MS 250
 short repeat_ms = REPEAT_MS;
@@ -90,6 +91,8 @@ void minus() {
     riceMinus();
   } else if (state.mode == Hum) {
     humMinus();
+  } else if (state.mode == SoundSelect) {
+    soundMinus();
   }
 }
 
@@ -112,6 +115,8 @@ void plus() {
     ricePlus();
   } else if (state.mode == Hum) {
     humPlus();
+  } else if (state.mode == SoundSelect) {
+    soundPlus();
   }
 }
 
@@ -147,6 +152,8 @@ void action() {
     }
   } else if (state.mode == Hum) {
     humAction();
+  } else if (state.mode == SoundSelect) {
+    soundAction();
   }
 }
 
