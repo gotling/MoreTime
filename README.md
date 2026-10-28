@@ -6,6 +6,15 @@ This is a replacement for JustATimer that was made in Arduino IDE and became to 
 
 Built using PlatformIO.
 
+# Code structure
+
+Each screen, like the clock, timer or menu, is a mode in `lib/`. A mode is a class inheriting from `Mode` (`lib/Mode/Mode.h`) that overrides what it needs: `open`, `close`, the buttons `minus`, `plus`, `action`, `hold`, and `update`, which is called every `updateInterval` ms while the mode is shown. Switch screens with `modeSwitch(&otherMode)`, which always closes the current mode first.
+
+To add a mode:
+
+1. Create `lib/MyMode/MyMode.h` and `.cpp` with a class inheriting from `Mode` and a global instance, e.g. `extern MyMode myMode;`.
+2. Add `&myMode` to `menuItems` in `lib/Menu/Menu.cpp`.
+
 # Hardware
 
 * ESP8266

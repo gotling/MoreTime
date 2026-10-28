@@ -1,173 +1,150 @@
 #include <Chess.h>
 
-#include <arduino-timer.h>
+#include <Arduino.h>
 
 #include <Display.h>
-#include <State.h>
 #include <Piezo.h>
+#include <MyTime.h>
 
-auto chessDisplayTimer = timer_create_default();
+#define DEFAULT_SECONDS (15 * 60)
+#define STEP_SECONDS 300
+#define INCREMENT_SECONDS 10
 
-unsigned static long startWhite = 0;
-unsigned static long startBlack = 0;
-int chessSeconds;
-int chessSecondsWhite;
-int chessSecondsBlack;
-bool chessActive = false;
-bool chessWhite = true;
+ChessMode chessMode;
 
-bool chessDisplay(void *argument);
-void chessSwitch(boolean white);
+ChessMode::ChessMode() {
+  updateInterval = 500;
+}
 
-void chessOpen() {
-  state.mode = Chess;
+void ChessMode::open() {
   startWhite = startBlack = 0;
-  chessSeconds = chessSecondsWhite = chessSecondsBlack = 15 * 60;
-  chessActive = false;
+  seconds = secondsWhite = secondsBlack = DEFAULT_SECONDS;
+  active = false;
+  ticking = false;
   displayFontThin();
-  chessDisplay();
+  display();
 }
 
-void chessClose() {
-  chessDisplayTimer.cancel();
-  chessSeconds = chessSecondsWhite = chessSecondsBlack = 0;
-  chessActive = false;
+void ChessMode::close() {
+  ticking = false;
+  seconds = secondsWhite = secondsBlack = 0;
+  active = false;
 }
 
-void chessMinus() {
-  if (chessActive) {
-    // Switch to black
-    chessSwitch(false);
+void ChessMode::minus() {
+  if (active) {
+    switchTo(false);
     return;
   }
-  
-  chessSeconds -= 300;
 
-  if (chessSeconds < 300)
-    chessSeconds = 300;
-  chessDisplay();
+  seconds -= STEP_SECONDS;
+
+  if (seconds < STEP_SECONDS)
+    seconds = STEP_SECONDS;
+  display();
 }
 
-void chessPlus() {
-  if (chessActive)
-    // Nothing or pause
+void ChessMode::plus() {
+  if (active)
     return;
-  
-  chessSeconds += 300;
-  chessDisplay();
+
+  seconds += STEP_SECONDS;
+  display();
 }
 
-bool chessAction() {
-  if (chessActive) {
-    // Switch to white
-    chessSwitch(true);
-    //return false;
-  }
+void ChessMode::action() {
+  if (active)
+    switchTo(true);
 
-  if (chessSeconds == 0)
-    return false;
-  
-  chessStart();
-  return true;
+  if (seconds == 0)
+    modeSwitch(&timeMode);
+  else
+    start();
 }
 
-bool chessHold() {
-  if (!chessActive && chessSeconds == 0)
-    return false;
-  
-  chessReset();
-  return true;
+void ChessMode::hold() {
+  if (!active && seconds == 0)
+    modeSwitch(&timeMode);
+  else
+    reset();
 }
 
-void chessSetup() {}
-
-void chessLoop() {
-  if (state.mode != Chess)
-    return;
-  
-  chessDisplayTimer.tick();
+void ChessMode::update() {
+  if (ticking)
+    display();
 }
 
-void chessSwitch(boolean white) {
-  if (white) {
-    chessWhite = true;
-    chessSecondsBlack = secondsLeftBlack();
-    chessSecondsBlack += 10;
+void ChessMode::switchTo(bool toWhite) {
+  if (toWhite) {
+    white = true;
+    secondsBlack = secondsLeftBlack() + INCREMENT_SECONDS;
     startWhite = millis();
   } else {
-    chessWhite = false;
-    chessSecondsWhite = secondsLeftWhite();
-    chessSecondsWhite += 10;
+    white = false;
+    secondsWhite = secondsLeftWhite() + INCREMENT_SECONDS;
     startBlack = millis();
   }
-  chessDisplay();
+  display();
 }
 
-void chessStart() {
-  if (chessDisplayTimer.empty()) {
-    Serial.println("Start Chess");
-    chessSecondsWhite = chessSecondsBlack = chessSeconds;
-    chessActive = true;
-    chessDisplayTimer.every(500, chessDisplayCallback);
-    startWhite = startBlack = millis();
-  }
+void ChessMode::start() {
+  if (ticking)
+    return;
+
+  Serial.println("Start Chess");
+  secondsWhite = secondsBlack = seconds;
+  active = true;
+  ticking = true;
+  restartUpdates();
+  startWhite = startBlack = millis();
 }
 
-bool chessStarted() {
-  return chessSeconds != 0;
-}
-
-void chessReset() {
-  chessDisplayTimer.cancel();
-  chessSeconds = chessSecondsWhite = chessSecondsBlack = 0;
-  chessActive = false;
+void ChessMode::reset() {
+  ticking = false;
+  seconds = secondsWhite = secondsBlack = 0;
+  active = false;
   displayFontThin();
-  chessDisplay();
+  display();
 }
 
-int secondsLeftWhite() {
+int ChessMode::secondsLeftWhite() {
   unsigned long diffMs = millis() - startWhite;
   unsigned int diff = diffMs / 1000;
-  return chessSecondsWhite - diff;
+  return secondsWhite - diff;
 }
 
-int secondsLeftBlack() {
+int ChessMode::secondsLeftBlack() {
   unsigned long diffMs = millis() - startBlack;
   unsigned int diff = diffMs / 1000;
-  return chessSecondsBlack - diff;
+  return secondsBlack - diff;
 }
 
-void chessDisplay() {
-  if (!chessActive) {
-    snprintf(message, BUF_SIZE, "%d:%02d", chessSeconds / 60, chessSeconds % 60);
+void ChessMode::display() {
+  if (!active) {
+    snprintf(message, BUF_SIZE, "%d:%02d", seconds / 60, seconds % 60);
     displayPrint(message);
     return;
   }
 
-  int secondsBlack = secondsLeftBlack();
-  int secondsWhite = secondsLeftWhite();
+  int leftBlack = secondsLeftBlack();
+  int leftWhite = secondsLeftWhite();
 
-  if ((secondsWhite <= 0) || (secondsBlack <= 0)) {
+  if ((leftWhite <= 0) || (leftBlack <= 0)) {
     piezoPlay();
 
-    if (secondsWhite <= 0)
+    if (leftWhite <= 0)
       snprintf(message, BUF_SIZE, "Black");
     else
       snprintf(message, BUF_SIZE, "White");
 
-    chessDisplayTimer.cancel();
+    ticking = false;
     displayFontDefault();
   } else {
-    if (chessWhite)
-      snprintf(message, BUF_SIZE, "< %d:%02d", secondsWhite / 60, secondsWhite % 60);
+    if (white)
+      snprintf(message, BUF_SIZE, "< %d:%02d", leftWhite / 60, leftWhite % 60);
     else
-      snprintf(message, BUF_SIZE, "%d:%02d >", secondsBlack / 60, secondsBlack % 60);
+      snprintf(message, BUF_SIZE, "%d:%02d >", leftBlack / 60, leftBlack % 60);
   }
 
   displayPrint(message);
-}
-
-bool chessDisplayCallback(void *argument) {
-  chessDisplay();
-  return true;
 }

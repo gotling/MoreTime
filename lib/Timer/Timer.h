@@ -1,22 +1,34 @@
 #ifndef _TIMER_H_
 #define _TIMER_H_
 
-extern void timerOpen();
-extern void timerClose();
+#include <Mode.h>
 
-extern void timerMinus();
-extern void timerPlus();
-extern bool timerAction();
-extern bool timerHold();
+// Countdown timer in 30 second steps. Keeps counting past zero after the alarm.
+class TimerMode : public Mode {
+public:
+  TimerMode();
+  const char *name() override { return "Timer"; }
+  void open() override;
+  void close() override;
+  void minus() override;
+  void plus() override;
+  void action() override;
+  void hold() override;
+  void update() override;
 
-extern void timerLoop();
-extern void timerStart();
-extern bool timerStarted();
-extern void timerReset();
-extern void timerSetTime(unsigned int seconds);
+  void setTime(int seconds);
+  void startPause();
 
-int secondsLeft();
-void timerDisplay();
-bool timerDisplayCallback(void *argument);
+private:
+  bool active = false;
+  unsigned long start = 0;
+  int seconds = 0;
+
+  int secondsLeft();
+  void reset();
+  void display();
+};
+
+extern TimerMode timerMode;
 
 #endif

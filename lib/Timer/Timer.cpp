@@ -1,138 +1,121 @@
 #include <Timer.h>
 
-#include <arduino-timer.h>
+#include <Arduino.h>
 
 #include <Display.h>
-#include <State.h>
 #include <Piezo.h>
+#include <MyTime.h>
 
-auto timerDisplayTimer = timer_create_default();
+#define STEP_SECONDS 30
 
-unsigned static long start = 0;
-int timerSeconds = 0;
-bool active = false;
+TimerMode timerMode;
 
-bool timerDisplay(void *argument);
+TimerMode::TimerMode() {
+  updateInterval = 500;
+}
 
-void timerOpen() {
-  state.mode = MyTimer;
-  start = timerSeconds = 0;
+void TimerMode::open() {
+  start = seconds = 0;
   active = false;
   displayFontWide();
-  timerDisplay();
+  display();
 }
 
-void timerClose() {
-  timerDisplayTimer.cancel();
-  timerSeconds = 0;
+void TimerMode::close() {
+  seconds = 0;
   active = false;
 }
 
-void timerMinus() {
+void TimerMode::minus() {
   if (active)
     return;
-  
-  timerSeconds -= 30;
 
-  if (timerSeconds < 0)
-    timerSeconds = 0;
-  timerDisplay();
+  seconds -= STEP_SECONDS;
+
+  if (seconds < 0)
+    seconds = 0;
+  display();
 }
 
-void timerPlus() {
+void TimerMode::plus() {
   if (active)
     return;
-  
-  timerSeconds += 30;
-  timerDisplay();
+
+  seconds += STEP_SECONDS;
+  display();
 }
 
-bool timerAction() {
-  if (timerSeconds == 0)
-    return false;
-  
-  timerStart();
-  return true;
+void TimerMode::action() {
+  if (seconds == 0)
+    modeSwitch(&timeMode);
+  else
+    startPause();
 }
 
-bool timerHold() {
-  if (!active && timerSeconds == 0)
-    return false;
-  
-  timerReset();
-  return true;
+void TimerMode::hold() {
+  if (!active && seconds == 0)
+    modeSwitch(&timeMode);
+  else
+    reset();
 }
 
-void timerLoop() {
-  if (state.mode != MyTimer)
-    return;
-  
-  timerDisplayTimer.tick();
+void TimerMode::update() {
+  if (active)
+    display();
 }
 
-void timerStart() {
-  if (timerDisplayTimer.empty()) {
+void TimerMode::setTime(int newSeconds) {
+  seconds = newSeconds;
+}
+
+void TimerMode::startPause() {
+  if (!active) {
     active = true;
-    timerDisplayTimer.every(500, timerDisplayCallback);
     start = millis();
+    restartUpdates();
   } else {
     active = false;
-    timerSeconds = secondsLeft();
-    timerDisplayTimer.cancel();
+    seconds = secondsLeft();
   }
 }
 
-bool timerStarted() {
-  return start != 0;
-}
-
-void timerReset() {
-  timerDisplayTimer.cancel();
-  timerSeconds = 0;
-  active = false;
-  displayFontWide();
-  timerDisplay();
-}
-
-int secondsLeft() {
+int TimerMode::secondsLeft() {
   unsigned long diffMs = millis() - start;
   unsigned int diff = diffMs / 1000;
-  return timerSeconds - diff;
+  return seconds - diff;
 }
 
-void timerSetTime(unsigned int seconds) {
-  timerSeconds = seconds;
+void TimerMode::reset() {
+  seconds = 0;
+  active = false;
+  displayFontWide();
+  display();
 }
 
-void timerDisplay() {
+void TimerMode::display() {
   if (!active) {
-    snprintf(message, BUF_SIZE, "%d:%02d", timerSeconds / 60, timerSeconds % 60);
+    snprintf(message, BUF_SIZE, "%d:%02d", seconds / 60, seconds % 60);
     displayPrint(message);
     return;
   }
 
-  int seconds = secondsLeft();
+  int left = secondsLeft();
 
-  if (seconds == 0) {
+  if (left == 0) {
     piezoPlay();
   }
 
-  if (seconds >= 0) {
-    snprintf(message, BUF_SIZE, "%d:%02d", seconds / 60, seconds % 60);
-  } else if (seconds <= -3600) {
+  if (left >= 0) {
+    snprintf(message, BUF_SIZE, "%d:%02d", left / 60, left % 60);
+  } else if (left <= -3600) {
     displayFontThin();
-    snprintf(message, BUF_SIZE, "+%d:%02d:%02d", -1 * seconds / 3600, -1 * (seconds % 3600) / 60, -1 * seconds % 60);
-  } else if (seconds <= -600) {
+    snprintf(message, BUF_SIZE, "+%d:%02d:%02d", -1 * left / 3600, -1 * (left % 3600) / 60, -1 * left % 60);
+  } else if (left <= -600) {
     displayFontThin();
-    snprintf(message, BUF_SIZE, "+%02d:%02d", -1 * (seconds % 3600) / 60, -1 * seconds % 60);
+    snprintf(message, BUF_SIZE, "+%02d:%02d", -1 * (left % 3600) / 60, -1 * left % 60);
   } else {
-    snprintf(message, BUF_SIZE, "+%d:%02d", -1 * seconds / 60, -1 * seconds % 60);
+    snprintf(message, BUF_SIZE, "+%d:%02d", -1 * left / 60, -1 * left % 60);
   }
 
   displayPrint(message);
-}
-
-bool timerDisplayCallback(void *argument) {
-  timerDisplay();
-  return true;
 }

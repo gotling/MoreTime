@@ -1,70 +1,67 @@
 #include <StopWatch.h>
 
-#include <arduino-timer.h>
+#include <Arduino.h>
 
 #include <Display.h>
-#include <State.h>
+#include <MyTime.h>
 
-auto stopWatchDisplayTimer = timer_create_default();
+StopWatchMode stopWatchMode;
 
-unsigned long start = 0;
-unsigned long previous = 0;
+StopWatchMode::StopWatchMode() {
+  updateInterval = 100;
+}
 
-bool stopWatchDisplay(void *argument);
-
-void stopWatchOpen() {
-  state.mode = StopWatch;
+void StopWatchMode::open() {
   previous = start = 0;
   displayFontWide();
-  stopWatchDisplay();
-  stopWatchStart();
+  display();
+  startPause();
 }
 
-void stopWatchClose() {
-  stopWatchDisplayTimer.cancel();
+void StopWatchMode::close() {
+  running = false;
   previous = start = 0;
 }
 
-void stopWatchMinus() {
+void StopWatchMode::plus() {
+  startPause();
 }
 
-void stopWatchPlus() {
-  stopWatchStart();
+void StopWatchMode::action() {
+  if (started())
+    reset();
+  else
+    modeSwitch(&timeMode);
 }
 
-void stopWatchAction() {
-  stopWatchReset();
+void StopWatchMode::update() {
+  if (running)
+    display();
 }
 
-void stopWatchLoop() {
-  if (state.mode != StopWatch)
-    return;
-  
-  stopWatchDisplayTimer.tick();
-}
-
-void stopWatchStart() {
-  if (stopWatchDisplayTimer.empty()) {
-    stopWatchDisplayTimer.every(100, stopWatchDisplayCallback);
+void StopWatchMode::startPause() {
+  if (!running) {
+    running = true;
     start = millis();
+    restartUpdates();
   } else {
-    stopWatchDisplayTimer.cancel();
+    running = false;
     previous = previous + (millis() - start);
   }
 }
 
-bool stopWatchStarted() {
+bool StopWatchMode::started() {
   return (start != 0) || (previous != 0);
 }
 
-void stopWatchReset() {
-  stopWatchDisplayTimer.cancel();
+void StopWatchMode::reset() {
+  running = false;
   previous = start = 0;
   displayFontWide();
-  stopWatchDisplay();
+  display();
 }
 
-void stopWatchDisplay() {
+void StopWatchMode::display() {
   if (start == 0) {
     snprintf(message, BUF_SIZE, "0.0");
     displayPrint(message);
@@ -86,9 +83,4 @@ void stopWatchDisplay() {
   }
 
   displayPrint(message);
-}
-
-bool stopWatchDisplayCallback(void *argument) {
-  stopWatchDisplay();
-  return true;
 }

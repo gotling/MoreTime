@@ -1,51 +1,42 @@
 #include <MyTime.h>
 
-#include <arduino-timer.h>
-
 #include <Display.h>
-#include <State.h>
 #include <NTP.h>
+#include <Menu.h>
+#include <Rice.h>
+#include <StopWatch.h>
 
-auto timeDisplayTimer = timer_create_default();
+TimeMode timeMode;
 
-void timeOpen() {
-  state.mode = Time;
+TimeMode::TimeMode() {
+  updateInterval = 1000;
+}
+
+void TimeMode::open() {
   displayFontWide();
-  timeDisplay();
-  timeDisplayTimer.every(1000, timeDisplayCallback);
+  update();
 }
 
-void timeClose() {
-    timeDisplayTimer.cancel();
+// Shortcuts from the clock
+void TimeMode::minus() {
+  modeSwitch(&riceMode);
 }
 
-void timeMinus() {
-
+void TimeMode::plus() {
+  modeSwitch(&stopWatchMode);
 }
 
-void timePlus() {
-
+void TimeMode::action() {
+  modeSwitch(&menuMode);
 }
 
-void timeAction() {
-
+void TimeMode::hold() {
+  modeSwitch(&menuMode);
 }
 
-void timeDisplay() {
+void TimeMode::update() {
   if (ntpTimeSet()) {
     snprintf(message, BUF_SIZE, "%02d:%02d", ntpHour(), ntpMinute());
     displayPrint(message);
   }
-}
-
-bool timeDisplayCallback(void *argument) {
-  timeDisplay();
-  return true;
-}
-
-void timeLoop() {
-  if (state.mode != Time)
-    return;
-  
-  timeDisplayTimer.tick();
 }

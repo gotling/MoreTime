@@ -1,80 +1,56 @@
 #include <Rice.h>
 
-#include <arduino-timer.h>
-
 #include <Display.h>
-#include <State.h>
-
-auto riceDisplayTimer = timer_create_default();
-bool riceDisplay(void *argument);
-
-unsigned short alternate = 1;
+#include <MyTime.h>
 
 const float step = 0.5;
 const short WATER_MULTIPLIER = 180;
 const short RICE_MULTIPLIER = 100;
 
-void riceAction();
+RiceMode riceMode;
 
-void riceOpen() {
-  state.mode = Rice;
-  state.rice = 0;
+RiceMode::RiceMode() {
+  updateInterval = 1500;
+}
+
+void RiceMode::open() {
+  rice = 0;
   alternate = 1;
   displayFontDefault();
-  riceStart();
+  update();
 }
 
-void riceClose() {
-  riceDisplayTimer.cancel();
-  state.rice = 0;
+void RiceMode::close() {
+  rice = 0;
   alternate = 1;
 }
 
-void riceLoop() {
-  if (state.mode != Rice)
-    return;
-  
-  riceDisplayTimer.tick();
-}
-
-void riceMinus() {
-  if (state.rice == step)
+void RiceMode::minus() {
+  if (rice == step)
     return;
 
-  riceDisplayTimer.cancel();
-  
-  state.rice -= step;
+  change(-step);
+}
+
+void RiceMode::plus() {
+  change(step);
+}
+
+void RiceMode::action() {
+  if (rice == 0)
+    modeSwitch(&timeMode);
+}
+
+// Show the new amount right away and keep it up for a full interval
+void RiceMode::change(float amount) {
+  rice += amount;
   alternate = 1;
-  riceStart();
+  update();
+  restartUpdates();
 }
 
-void ricePlus() {
-  riceDisplayTimer.cancel();
-
-  state.rice += step;
-  alternate = 1;
-  riceStart();
-}
-
-void riceAction() {}
-
-void riceStart() {
-  if (riceDisplayTimer.empty()) {
-    riceDisplay();
-    riceDisplayTimer.every(1500, riceDisplayCallback);
-  } else {
-    riceDisplayTimer.cancel();
-  }
-}
-
-bool riceStarted() {
-  return state.rice != 0;
-}
-
-void riceSetup() {}
-
-void riceDisplay() {
-  if (state.rice == 0) {
+void RiceMode::update() {
+  if (rice == 0) {
     snprintf(message, BUF_SIZE, "Units");
     displayPrint(message);
     return;
@@ -88,7 +64,7 @@ void riceDisplay() {
   } else if (alternate == 1) {
     alternate++;
     displayFontWide();
-    snprintf(message, BUF_SIZE, "%.1f", state.rice);
+    snprintf(message, BUF_SIZE, "%.1f", rice);
   } else if (alternate == 2) {
     alternate++;
     displayFontDefault();
@@ -96,7 +72,7 @@ void riceDisplay() {
   } else if (alternate == 3) {
     alternate++;
     displayFontWide();
-    snprintf(message, BUF_SIZE, "%.0f", state.rice * RICE_MULTIPLIER);
+    snprintf(message, BUF_SIZE, "%.0f", rice * RICE_MULTIPLIER);
   } else if (alternate == 4) {
     alternate++;
     displayFontDefault();
@@ -104,13 +80,8 @@ void riceDisplay() {
   } else if (alternate == 5) {
     alternate = 0;
     displayFontWide();
-    snprintf(message, BUF_SIZE, "%.0f", state.rice * WATER_MULTIPLIER);
+    snprintf(message, BUF_SIZE, "%.0f", rice * WATER_MULTIPLIER);
   }
 
   displayPrint(message);
-}
-
-bool riceDisplayCallback(void *argument) {
-  riceDisplay();
-  return true;
 }

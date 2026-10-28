@@ -2,18 +2,12 @@
 
 #include <Display.h>
 #include <Buttons.h>
-#include <StopWatch.h>
 #include <Network.h>
 #include <NTP.h>
-#include <MyTime.h>
-#include <Menu.h>
-#include <Timer.h>
 #include <Piezo.h>
 // #include <_MQTT.h>
-#include <Message.h>
-#include <Chess.h>
-#include <Rice.h>
-#include <Hum.h>
+#include <Mode.h>
+#include <MyTime.h>
 
 void setup() {
   Serial.begin(115200);
@@ -25,24 +19,15 @@ void setup() {
   ntpSetup();
   piezoSetup();
   // mqttSetup();
-  chessSetup();
-  riceSetup();
 
   Serial.println("TiME started");
-  timeOpen();
+  modeSwitch(&timeMode);
 }
 
 void loop() {
   buttonsLoop();
-  stopWatchLoop();
-  timeLoop();
-  menuLoop();
-  timerLoop();
+  modeLoop();
   displayLoop();
   piezoLoop();
   // mqttLoop();
-  messageLoop();
-  chessLoop();
-  riceLoop();
-  humLoop();
 }

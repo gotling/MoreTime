@@ -2,19 +2,7 @@
 
 #include <arduino-timer.h>
 
-#include <Display.h>
-#include <State.h>
-#include <Menu.h>
-#include <Counter.h>
-#include <StopWatch.h>
-#include <MyTime.h>
-#include <Timer.h>
-#include <Piezo.h>
-#include <Message.h>
-#include <Chess.h>
-#include <Rice.h>
-#include <Hum.h>
-#include <Sound.h>
+#include <Mode.h>
 
 #define REPEAT_MS 250
 short repeat_ms = REPEAT_MS;
@@ -74,110 +62,19 @@ void actionCallback(Button::CALLBACK_EVENT event, uint8_t id) {
 }
 
 void minus() {
-  if (state.mode == Counter) {
-    counterMinus();
-  } else if (state.mode == Menu) {
-    menuMinus();
-  } else if (state.mode == MyTimer) {
-    timerMinus();
-  } else if (state.mode == Time) {
-    // messageOpen();
-    riceOpen();
-  } else if (state.mode == Message) {
-    messageMinus();
-  } else if (state.mode == Chess) {
-    chessMinus();
-  } else if (state.mode == Rice) {
-    riceMinus();
-  } else if (state.mode == Hum) {
-    humMinus();
-  } else if (state.mode == SoundSelect) {
-    soundMinus();
-  }
+  modeCurrent()->minus();
 }
 
 void plus() {
-  if (state.mode == Counter) {
-    counterPlus();
-  } else if (state.mode == Menu) {
-    menuPlus();
-  } else if (state.mode == StopWatch) {
-    stopWatchPlus();
-  } else if (state.mode == MyTimer) {
-    timerPlus();
-  } else if (state.mode == Time) {
-    stopWatchOpen();
-  } else if (state.mode == Message) {
-    messagePlus();
-  } else if (state.mode == Chess) {
-    chessPlus();
-  } else if (state.mode == Rice) {
-    ricePlus();
-  } else if (state.mode == Hum) {
-    humPlus();
-  } else if (state.mode == SoundSelect) {
-    soundPlus();
-  }
+  modeCurrent()->plus();
 }
 
 void action() {
-  if (state.mode == Counter) {
-    if (counterStarted())
-      counterAction();
-    else
-      timeOpen();
-  } else if (state.mode == Menu) {
-    menuAction();
-  } else if (state.mode == StopWatch) {
-    if (stopWatchStarted())
-      stopWatchAction();
-    else
-      timeOpen();
-  } else if (state.mode == Time) {
-    menuOpen();
-  } else if (state.mode == MyTimer) {
-    if (!timerAction())
-      timeOpen();
-  } else if (state.mode == Message) {
-    timeOpen();
-  } else if (state.mode == Chess) {
-    if (!chessAction())
-      timeOpen();
-  } else if (state.mode == Rice) {
-    if (riceStarted())
-      riceAction();
-    else {
-      riceClose();
-      timeOpen();
-    }
-  } else if (state.mode == Hum) {
-    humAction();
-  } else if (state.mode == SoundSelect) {
-    soundAction();
-  }
+  modeCurrent()->action();
 }
 
 void hold() {
-  if (state.mode == Counter) {
-    timeOpen();
-  } else if (state.mode == StopWatch) {
-    stopWatchClose();
-    timeOpen();
-  } else if (state.mode == Time) {
-    menuOpen();
-  } else if (state.mode == MyTimer) {
-    if (!timerHold())
-      timeOpen();
-  } else if (state.mode == Chess) {
-    if (!chessHold())
-      timeOpen();
-  } else if (state.mode == Rice) {
-    riceClose();
-    timeOpen();
-  } else if (state.mode == Hum) {
-    humClose();
-    timeOpen();
-  }
+  modeCurrent()->hold();
 }
 
 void reset_repeat() {

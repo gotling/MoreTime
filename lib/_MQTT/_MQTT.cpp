@@ -4,6 +4,7 @@
 
 #include <ESP8266WiFi.h>
 #include <MQTT.h>
+#include <Mode.h>
 #include <Timer.h>
 #include <Message.h>
 
@@ -63,11 +64,11 @@ void messageReceived(String &topic, String &payload) {
 
   if (topic == "more-time/message") {
     Serial.println("Message");
-    messageAdd(payload);
+    messageMode.add(payload);
   } else if (topic == "more-time/timer") {
     Serial.println("Timer");
-    timerOpen();
-    timerSetTime(atoi(payload.c_str()));
-    timerStart();
+    modeSwitch(&timerMode);
+    timerMode.setTime(atoi(payload.c_str()));
+    timerMode.startPause();
   }
 }

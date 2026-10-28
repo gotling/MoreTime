@@ -1,121 +1,69 @@
 #include <Menu.h>
 
-#include <arduino-timer.h>
+#include <Arduino.h>
 
 #include <Display.h>
-#include <State.h>
-#include <Counter.h>
-#include <StopWatch.h>
 #include <MyTime.h>
+#include <StopWatch.h>
 #include <Timer.h>
+#include <Counter.h>
 #include <Chess.h>
 #include <Rice.h>
-#include <Hum.h>
 #include <Sound.h>
+#include <Hum.h>
 
-MenuMode menuMode = Undefind;
+#define IDLE_MS 10000
 
-auto menuIdleTimer = timer_create_default();
+// Add new modes here to show them in the menu
+Mode *menuItems[] = {
+  &stopWatchMode,
+  &timerMode,
+  &counterMode,
+  &timeMode,
+  &chessMode,
+  &riceMode,
+  &soundMode,
+  &humMode,
+};
+const int menuItemCount = sizeof(menuItems) / sizeof(Mode *);
 
-void menuOpen() {
-  state.mode = Menu;
-  if ((menuMode == Undefind) || (menuMode == MenuTime))
-    menuMode = MenuStopWatch;
-  
+MenuMode menuMode;
+
+MenuMode::MenuMode() {
+  updateInterval = IDLE_MS;
+}
+
+void MenuMode::open() {
+  // Start from the top unless the last choice is worth coming back to
+  if (menuItems[index] == &timeMode)
+    index = 0;
+
   displayFontDefault();
-  displayCurrent();
-
-  resetIdleTimer();
+  display();
 }
 
-void resetIdleTimer() {
-  menuIdleTimer.cancel();
-  menuIdleTimer.in(10000, menuIdleCallback);
+void MenuMode::minus() {
+  restartUpdates();
+  index = (index + menuItemCount - 1) % menuItemCount;
+  display();
 }
 
-void menuMinus() {
-  resetIdleTimer();
-  if (menuMode == MenuStopWatch)
-    menuMode = MenuHum;
-  else
-    menuMode = static_cast<MenuMode>((menuMode - 1));
-  Serial.print("MenuMinus: ");
-  Serial.println(menuMode);
-  displayCurrent();
+void MenuMode::plus() {
+  restartUpdates();
+  index = (index + 1) % menuItemCount;
+  display();
 }
 
-void menuPlus() {
-  resetIdleTimer();
-  menuMode = static_cast<MenuMode>((menuMode + 1) % (MenuHum + 1));
-  Serial.print("MenuPlus: ");
-  Serial.println(menuMode);
-  displayCurrent();
+void MenuMode::action() {
+  modeSwitch(menuItems[index]);
 }
 
-void menuAction() {
-  Serial.print("MenuAction: ");
-  Serial.println(menuMode);
-
-  if (menuMode == MenuCounter)
-    counterOpen();
-  else if (menuMode == MenuStopWatch)
-    stopWatchOpen();
-  else if (menuMode == MenuTimer)
-    timerOpen();
-  else if (menuMode == MenuTime)
-    timeOpen();
-  else if (menuMode == MenuChess)
-    chessOpen();
-  else if (menuMode == MenuRice)
-    riceOpen();
-  else if (menuMode == MenuSound)
-    soundOpen();
-  else if (menuMode == MenuHum)
-    humOpen();
+// No button pressed for IDLE_MS
+void MenuMode::update() {
+  modeSwitch(&timeMode);
 }
 
-void displayCurrent() {
-  switch (menuMode)
-  {
-  case MenuStopWatch:
-    snprintf(message, BUF_SIZE, "Chrono");
-    break;
-  case MenuTimer:
-    snprintf(message, BUF_SIZE, "Timer");
-    break;
-  case MenuCounter:
-    snprintf(message, BUF_SIZE, "Counter");
-    break;
-  case MenuTime:
-    snprintf(message, BUF_SIZE, "Time");
-    break;
-  case MenuChess:
-    snprintf(message, BUF_SIZE, "Chess");
-    break;
-  case MenuRice:
-    snprintf(message, BUF_SIZE, "Rice");
-    break;
-  case MenuSound:
-    snprintf(message, BUF_SIZE, "Sound");
-    break;
-  case MenuHum:
-    snprintf(message, BUF_SIZE, "Hum");
-    break;
-  default:
-    snprintf(message, BUF_SIZE, "Unknown");
-    break;
-  }
+void MenuMode::display() {
+  snprintf(message, BUF_SIZE, "%s", menuItems[index]->name());
   displayPrint(message);
-}
-
-bool menuIdleCallback(void *argument) {
-  timeOpen();
-  return true;
-}
-
-void menuLoop() {
-  if (state.mode != Menu)
-    return;
-  
-  menuIdleTimer.tick();
 }

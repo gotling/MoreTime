@@ -1,81 +1,56 @@
 #include <Message.h>
 
-#include <arduino-timer.h>
 #include <ArduinoJson.h>
 
-#include <Arduino.h>
-
 #include <Display.h>
-#include <State.h>
 #include <MyTime.h>
 
-auto messageTimer = timer_create_default();
+MessageMode messageMode;
 
-unsigned long messageStart = 0;
-
-String messages[4] = {"0", "1", "2", "3"};
-unsigned short messageIndex = 0;
-unsigned short messageDisplayIndex = 0;
 StaticJsonDocument<200> doc;
 
-void messageAdd(String &message) {
-  deserializeJson(doc, message);
+void MessageMode::add(String &json) {
+  deserializeJson(doc, json);
 
   short index = doc["position"];
-  if ((index < 0) || (index > 3))
+  if ((index < 0) || (index >= MESSAGE_COUNT))
     return;
-  
+
   messages[index] = doc["value"].as<String>();
 
-  if ((state.mode == Message) && (index == messageDisplayIndex))
-    messageDisplay();
+  if ((modeCurrent() == this) && (index == displayIndex))
+    display();
 }
 
-void messageSetup() {
+void MessageMode::open() {
+  displayIndex = 1;
+  display();
 }
 
-void messageLoop() {
-  if (state.mode != Message)
-    return;
-  
-  messageTimer.tick();
+void MessageMode::minus() {
+  if (displayIndex == 0)
+    displayIndex = MESSAGE_COUNT - 1;
+  else
+    displayIndex--;
+
+  display();
 }
 
-void messageOpen() {
-  state.mode = Message;
-  messageStart = 0;
-  messageDisplayIndex = 1;
-  messageDisplay();
+void MessageMode::plus() {
+  if (displayIndex >= MESSAGE_COUNT - 1)
+    displayIndex = 0;
+  else
+    displayIndex++;
+
+  display();
 }
 
-void messageClose() {
+void MessageMode::action() {
+  modeSwitch(&timeMode);
 }
 
-void messageDisplay() {
+void MessageMode::display() {
   displayFontDefault();
-  
-  displayPrint((char *)messages[messageDisplayIndex].c_str());
+
+  displayPrint((char *)messages[displayIndex].c_str());
 }
-
-void messageMinus() {
-  if (messageDisplayIndex == 0)
-    messageDisplayIndex = 3;
-  else
-    messageDisplayIndex--;
-  
-  messageDisplay();
-}
-
-void messagePlus() {
-  if (messageDisplayIndex >= 3)
-    messageDisplayIndex = 0;
-  else
-    messageDisplayIndex++;
-  
-  messageDisplay();
-}
-
-void messageAction() {
-
-}
-

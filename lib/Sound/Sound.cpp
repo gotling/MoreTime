@@ -3,50 +3,50 @@
 #include <Arduino.h>
 
 #include <Display.h>
-#include <State.h>
 #include <Piezo.h>
 #include <MyTime.h>
 
-uint8_t soundIndex = 0;
+SoundMode soundMode;
 
-void soundOpen() {
-  state.mode = SoundSelect;
-  soundIndex = piezoSound();
+void SoundMode::open() {
+  index = piezoSound();
   displayFontDefault();
-  soundDisplay();
+  display();
 }
 
-void soundClose() {
+void SoundMode::close() {
   piezoStop();
 }
 
-void soundMinus() {
-  soundIndex = (soundIndex + soundCount - 1) % soundCount;
-  soundDisplay();
-  piezoPreview(soundIndex);
+void SoundMode::minus() {
+  index = (index + soundCount - 1) % soundCount;
+  preview();
 }
 
-void soundPlus() {
-  soundIndex = (soundIndex + 1) % soundCount;
-  soundDisplay();
-  piezoPreview(soundIndex);
+void SoundMode::plus() {
+  index = (index + 1) % soundCount;
+  preview();
 }
 
-void soundAction() {
-  piezoSetSound(soundIndex);
+void SoundMode::action() {
+  piezoSetSound(index);
   Serial.print("Sound: saved ");
-  Serial.println(sounds[soundIndex].name);
-  soundClose();
-  timeOpen();
+  Serial.println(sounds[index].name);
+  modeSwitch(&timeMode);
+}
+
+void SoundMode::preview() {
+  display();
+  piezoPreview(index);
 }
 
 // A trailing * marks the saved alarm sound
-void soundDisplay() {
-  bool selected = soundIndex == piezoSound();
-  snprintf(message, BUF_SIZE, "%s%s", sounds[soundIndex].name, selected ? "*" : "");
+void SoundMode::display() {
+  bool selected = index == piezoSound();
+  snprintf(message, BUF_SIZE, "%s%s", sounds[index].name, selected ? "*" : "");
   displayPrint(message);
 
   Serial.print("Sound: ");
-  Serial.print(sounds[soundIndex].name);
+  Serial.print(sounds[index].name);
   Serial.println(selected ? " (selected)" : "");
 }

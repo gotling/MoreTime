@@ -1,17 +1,30 @@
 #ifndef _STOPWATCH_H_
 #define _STOPWATCH_H_
 
-extern void stopWatchOpen();
-extern void stopWatchClose();
-extern void stopWatchMinus();
-extern void stopWatchPlus();
-extern void stopWatchAction();
-extern void stopWatchLoop();
-extern void stopWatchStart();
-extern bool stopWatchStarted();
-extern void stopWatchReset();
+#include <Mode.h>
 
-void stopWatchDisplay();
-bool stopWatchDisplayCallback(void *argument);
+// Starts on open. Plus pauses and resumes, action resets or returns to the clock.
+class StopWatchMode : public Mode {
+public:
+  StopWatchMode();
+  const char *name() override { return "Chrono"; }
+  void open() override;
+  void close() override;
+  void plus() override;
+  void action() override;
+  void update() override;
+
+private:
+  bool running = false;
+  unsigned long start = 0;
+  unsigned long previous = 0;
+
+  void startPause();
+  bool started();
+  void reset();
+  void display();
+};
+
+extern StopWatchMode stopWatchMode;
 
 #endif

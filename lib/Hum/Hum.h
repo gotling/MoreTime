@@ -1,26 +1,42 @@
 #ifndef _HUM_H_
 #define _HUM_H_
 
+#include <Mode.h>
+
 // Test mode for finding the source of an audible hum.
 // Action cycles through the tests, minus/plus change the value, hold exits.
+class HumMode : public Mode {
+public:
+  const char *name() override { return "Hum"; }
+  void open() override;
+  void close() override;
+  void minus() override;
+  void plus() override;
+  void action() override;
+  void update() override;
 
-enum HumTest {
-  HumBrightness = 0,
-  HumWiFiSleep = 1,
-  HumDisplay = 2,
-  HumLoopDelay = 3,
-  HumPiezo = 4
+private:
+  enum Test {
+    Brightness = 0,
+    WiFiSleep = 1,
+    Display = 2,
+    LoopDelay = 3,
+    Piezo = 4
+  };
+
+  Test test = Brightness;
+  int brightness;
+  int wifiSleep;
+  bool displayOn;
+  int loopDelay;
+  bool piezoLow;
+
+  void defaults();
+  void change(int direction);
+  void apply();
+  void display();
 };
 
-extern void humOpen();
-extern void humClose();
-extern void humMinus();
-extern void humPlus();
-extern void humAction();
-extern void humLoop();
-
-void humChange(int direction);
-void humApply();
-void humDisplay();
+extern HumMode humMode;
 
 #endif

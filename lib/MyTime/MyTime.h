@@ -1,14 +1,21 @@
 #ifndef _MYTIME_H_
 #define _MYTIME_H_
 
-extern void timeOpen();
-extern void timeClose();
-extern void timeMinus();
-extern void timePlus();
-extern void timeAction();
-extern void timeLoop();
+#include <Mode.h>
 
-void timeDisplay();
-bool timeDisplayCallback(void *argument);
+// The clock, shown at startup and when leaving other modes
+class TimeMode : public Mode {
+public:
+  TimeMode();
+  const char *name() override { return "Time"; }
+  void open() override;
+  void minus() override;
+  void plus() override;
+  void action() override;
+  void hold() override;
+  void update() override;
+};
+
+extern TimeMode timeMode;
 
 #endif
