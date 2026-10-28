@@ -28,6 +28,8 @@ https://github.com/MajicDesigns/MD_Parola
 
 Configure font: https://pjrp.github.io/MDParolaFontEditor
 
-## NTPClient
+## WiFiManager
 
-https://github.com/arduino-libraries/NTPClient
+https://github.com/tzapu/WiFiManager
+
+On first boot, or if the saved network can't be reached, the device shows "Setup" and opens an access point named `MoreTime-<chip id>`. Connect to it and pick a WiFi network in the portal. Time zone is set in `lib/NTP/NTP.h`.

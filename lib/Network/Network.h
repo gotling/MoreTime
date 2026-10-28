@@ -1,4 +1,6 @@
+#ifndef _NETWORK_H_
+#define _NETWORK_H_
+
 extern void networkSetup();
-extern void networkLoop();
-extern void networkPortal();
-extern void printLocalTime();
+
+#endif

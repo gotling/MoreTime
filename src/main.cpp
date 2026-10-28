@@ -9,7 +9,7 @@
 #include <Menu.h>
 #include <Timer.h>
 #include <Piezo.h>
-#include <_MQTT.h>
+// #include <_MQTT.h>
 #include <Message.h>
 #include <Chess.h>
 #include <Rice.h>
@@ -23,7 +23,7 @@ void setup() {
   networkSetup();
   ntpSetup();
   piezoSetup();
-  mqttSetup();
+  // mqttSetup();
   chessSetup();
   riceSetup();
 
@@ -34,14 +34,12 @@ void setup() {
 void loop() {
   buttonsLoop();
   stopWatchLoop();
-  networkLoop();
-  ntpLoop();
   timeLoop();
   menuLoop();
   timerLoop();
   displayLoop();
   piezoLoop();
-  mqttLoop();
+  // mqttLoop();
   messageLoop();
   chessLoop();
   riceLoop();

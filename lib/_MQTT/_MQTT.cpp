@@ -10,13 +10,20 @@
 WiFiClient net;
 MQTTClient client;
 
-short retry_connect = 0;
+// Retry in the background so a missing broker doesn't block buttons and display
+#define RECONNECT_INTERVAL 30000
+// Keep each attempt short, it blocks the main loop while running
+#define CONNECT_TIMEOUT 1000
+
+unsigned long lastConnectAttempt = 0;
 
 void messageReceived(String &topic, String &payload);
 
 void mqttSetup() {
   // Note: Local domain names (e.g. "Computer.local" on OSX) are not supported
   // by Arduino. You need to set the IP address directly.
+  net.setTimeout(CONNECT_TIMEOUT);
+  client.setTimeout(CONNECT_TIMEOUT);
   client.begin("10.0.0.3", net);
   client.onMessage(messageReceived);
 
@@ -26,10 +33,8 @@ void mqttSetup() {
 void mqttLoop() {
   client.loop();
 
-  if (!client.connected()) {
-    delay(10);
+  if (!client.connected() && millis() - lastConnectAttempt > RECONNECT_INTERVAL)
     connect();
-  }
 }
 
 void mqttPublish() {
@@ -37,23 +42,18 @@ void mqttPublish() {
 }
 
 void connect() {
-  Serial.print("Checking WiFi...");
-  while (WiFi.status() != WL_CONNECTED) {
-    Serial.print(".");
-    delay(1000);
+  lastConnectAttempt = millis();
+
+  if (WiFi.status() != WL_CONNECTED)
+    return;
+
+  Serial.print("MQTT connecting...");
+  if (!client.connect("MoreTime", "public", "public")) {
+    Serial.printf(" failed (error %d, return code %d)\n", client.lastError(), client.returnCode());
+    return;
   }
 
-  Serial.print("\nConnecting...");
-  while (!client.connect("MoreTime", "public", "public")) {
-    Serial.print(".");
-    delay(1000);
-    retry_connect++;
-
-    if (retry_connect > 10)
-      break;
-  }
-
-  Serial.println("\nConnected!");
+  Serial.println(" connected!");
 
   client.subscribe("more-time/#");
 }
