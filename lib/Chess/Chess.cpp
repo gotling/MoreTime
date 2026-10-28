@@ -21,17 +21,22 @@ void ChessMode::open() {
   seconds = secondsWhite = secondsBlack = DEFAULT_SECONDS;
   active = false;
   ticking = false;
+  over = false;
   displayFontThin();
   display();
 }
 
 void ChessMode::close() {
   ticking = false;
+  over = false;
   seconds = secondsWhite = secondsBlack = 0;
   active = false;
 }
 
 void ChessMode::minus() {
+  if (over)
+    return;
+
   if (active) {
     switchTo(false);
     return;
@@ -53,6 +58,15 @@ void ChessMode::plus() {
 }
 
 void ChessMode::action() {
+  // Back to the setup screen with the same time, ready for a new game
+  if (over) {
+    over = false;
+    active = false;
+    displayFontThin();
+    display();
+    return;
+  }
+
   if (active)
     switchTo(true);
 
@@ -101,6 +115,7 @@ void ChessMode::start() {
 
 void ChessMode::reset() {
   ticking = false;
+  over = false;
   seconds = secondsWhite = secondsBlack = 0;
   active = false;
   displayFontThin();
@@ -138,6 +153,7 @@ void ChessMode::display() {
       snprintf(message, BUF_SIZE, "White");
 
     ticking = false;
+    over = true;
     displayFontDefault();
   } else {
     if (white)

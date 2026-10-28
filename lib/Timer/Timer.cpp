@@ -75,7 +75,10 @@ void TimerMode::startPause() {
     restartUpdates();
   } else {
     active = false;
-    seconds = secondsLeft();
+    // Pausing after the alarm stops at zero
+    seconds = max(secondsLeft(), 0);
+    displayFontWide();
+    display();
   }
 }
 

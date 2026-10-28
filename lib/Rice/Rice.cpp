@@ -26,7 +26,7 @@ void RiceMode::close() {
 }
 
 void RiceMode::minus() {
-  if (rice == step)
+  if (rice <= step)
     return;
 
   change(-step);

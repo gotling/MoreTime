@@ -20,6 +20,7 @@ public:
 private:
   bool active = false;
   bool ticking = false;
+  bool over = false;
   bool white = true;
   unsigned long startWhite = 0;
   unsigned long startBlack = 0;
