@@ -15,8 +15,14 @@ unsigned int piezoRepeat = 3;
 
 void piezoSetup()
 {
-  pinMode(PIEZO_PIN, OUTPUT);
-  digitalWrite(PIEZO_PIN, 0);
+  piezoIdle();
+}
+
+// Leave the pin high-impedance when silent. Driven low, the piezo plays
+// supply noise from the display and WiFi as an audible hum.
+void piezoIdle()
+{
+  pinMode(PIEZO_PIN, INPUT);
 }
 
 void piezoPlay()
@@ -35,6 +41,7 @@ void piezoStop()
 {
   piezoActive = false;
   noTone(PIEZO_PIN);
+  piezoIdle();
 }
 
 void piezoLoop()

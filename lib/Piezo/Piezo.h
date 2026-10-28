@@ -7,5 +7,6 @@ extern void piezoSetup();
 extern void piezoLoop();
 extern void piezoPlay();
 extern void piezoStop();
+extern void piezoIdle();
 
 #endif

@@ -26,5 +26,7 @@ extern void displayAlign(enum textPosition_t);
 extern void displayFontWide();
 extern void displayFontThin();
 extern void displayFontDefault();
+extern void displayBrightness(uint8_t intensity);
+extern void displayShutdown(bool off);
 
 #endif

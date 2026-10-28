@@ -13,6 +13,7 @@
 #include <Message.h>
 #include <Chess.h>
 #include <Rice.h>
+#include <Hum.h>
 
 #define REPEAT_MS 250
 short repeat_ms = REPEAT_MS;
@@ -87,6 +88,8 @@ void minus() {
     chessMinus();
   } else if (state.mode == Rice) {
     riceMinus();
+  } else if (state.mode == Hum) {
+    humMinus();
   }
 }
 
@@ -107,6 +110,8 @@ void plus() {
     chessPlus();
   } else if (state.mode == Rice) {
     ricePlus();
+  } else if (state.mode == Hum) {
+    humPlus();
   }
 }
 
@@ -140,6 +145,8 @@ void action() {
       riceClose();
       timeOpen();
     }
+  } else if (state.mode == Hum) {
+    humAction();
   }
 }
 
@@ -160,7 +167,10 @@ void hold() {
   } else if (state.mode == Rice) {
     riceClose();
     timeOpen();
-  } 
+  } else if (state.mode == Hum) {
+    humClose();
+    timeOpen();
+  }
 }
 
 void reset_repeat() {

@@ -47,3 +47,11 @@ void displayFontThin() {
 void displayFontDefault() {
     myDisplay.setFont(nullptr);
 }
+
+void displayBrightness(uint8_t intensity) {
+    myDisplay.setIntensity(intensity);
+}
+
+void displayShutdown(bool off) {
+    myDisplay.displayShutdown(off);
+}

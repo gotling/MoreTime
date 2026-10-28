@@ -11,7 +11,8 @@ enum Mode {
   Time = 6,
   Message = 7,
   Chess = 8,
-  Rice = 9
+  Rice = 9,
+  Hum = 10
 };
 
 struct State { 

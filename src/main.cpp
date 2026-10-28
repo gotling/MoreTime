@@ -13,6 +13,7 @@
 #include <Message.h>
 #include <Chess.h>
 #include <Rice.h>
+#include <Hum.h>
 
 void setup() {
   Serial.begin(115200);
@@ -43,4 +44,5 @@ void loop() {
   messageLoop();
   chessLoop();
   riceLoop();
+  humLoop();
 }
