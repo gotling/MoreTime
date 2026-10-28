@@ -43,8 +43,7 @@ void SoundMode::preview() {
 // A trailing * marks the saved alarm sound
 void SoundMode::display() {
   bool selected = index == piezoSound();
-  snprintf(message, BUF_SIZE, "%s%s", sounds[index].name, selected ? "*" : "");
-  displayPrint(message);
+  displayPrintf("%s%s", sounds[index].name, selected ? "*" : "");
 
   Serial.print("Sound: ");
   Serial.print(sounds[index].name);

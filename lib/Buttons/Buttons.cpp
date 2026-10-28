@@ -1,112 +1,104 @@
 #include <Buttons.h>
 
+#include <AbleButtons.h>
 #include <arduino-timer.h>
 
 #include <Mode.h>
 
+using Button = AblePullupCallbackButton;
+using ButtonList = AblePullupCallbackButtonList;
+
+// Delay before minus/plus start repeating, repeats speed up the longer they are held
 #define REPEAT_MS 250
-short repeat_ms = REPEAT_MS;
-short repeat_count = 0;
 
-Button btnA(BUTTON_A_PIN, minusCallback);   // Primary button.
-Button btnB(BUTTON_B_PIN, plusCallback);    // Secondary button.
-Button btnC(BUTTON_C_PIN, actionCallback);  // Third button.
+static void minusCallback(Button::CALLBACK_EVENT event, uint8_t id);
+static void plusCallback(Button::CALLBACK_EVENT event, uint8_t id);
+static void actionCallback(Button::CALLBACK_EVENT event, uint8_t id);
 
-// Array of buttons for ButtonList.
-Button *btns[] = {
-  &btnA,
-  &btnB,
-  &btnC
+static Button btnMinus(BUTTON_MINUS_PIN, minusCallback);
+static Button btnPlus(BUTTON_PLUS_PIN, plusCallback);
+static Button btnAction(BUTTON_ACTION_PIN, actionCallback);
+
+static Button *btns[] = {
+  &btnMinus,
+  &btnPlus,
+  &btnAction
 };
-ButtonList btnList(btns);  // List of button to control together.
+static ButtonList btnList(btns);
 
-auto timer = timer_create_default();
+static auto repeatTimer = timer_create_default();
+static short repeatMs = REPEAT_MS;
+static short repeatCount = 0;
 
 void buttonsSetup() {
-  btnList.begin();  // ButtonList calls begin() for each button in the list.
+  btnList.begin();
 }
 
 void buttonsLoop() {
-    btnList.handle();  // ButtonList calls handle() for each button in the list.
-    timer.tick();
+  btnList.handle();
+  repeatTimer.tick();
 }
 
-void minusCallback(Button::CALLBACK_EVENT event, uint8_t id) {
+static void resetRepeat() {
+  repeatMs = REPEAT_MS;
+  repeatCount = 0;
+  repeatTimer.cancel();
+}
+
+static void updateRepeat(bool (*operation)(void *argument)) {
+  repeatCount++;
+  repeatTimer.cancel();
+
+  if (repeatCount > 20)
+    repeatMs = 25;
+  else if (repeatCount > 10)
+    repeatMs = 50;
+  else if (repeatCount > 5)
+    repeatMs = 100;
+  else if (repeatCount > 2)
+    repeatMs = 200;
+
+  repeatTimer.every(repeatMs, operation);
+}
+
+static bool repeatMinus(void *argument) {
+  modeCurrent()->minus();
+  updateRepeat(repeatMinus);
+  return true;
+}
+
+static bool repeatPlus(void *argument) {
+  modeCurrent()->plus();
+  updateRepeat(repeatPlus);
+  return true;
+}
+
+static void minusCallback(Button::CALLBACK_EVENT event, uint8_t id) {
   if (event == Button::PRESSED_EVENT) {
     Serial.println("Minus");
-    minus();
-    timer.every(repeat_ms, timer_minus);
+    modeCurrent()->minus();
+    repeatTimer.every(repeatMs, repeatMinus);
   } else if (event == Button::RELEASED_EVENT) {
-    reset_repeat();
+    resetRepeat();
   }
 }
 
-void plusCallback(Button::CALLBACK_EVENT event, uint8_t id) {
+static void plusCallback(Button::CALLBACK_EVENT event, uint8_t id) {
   if (event == Button::PRESSED_EVENT) {
     Serial.println("Plus");
-    plus();
-    timer.every(repeat_ms, timer_plus);
+    modeCurrent()->plus();
+    repeatTimer.every(repeatMs, repeatPlus);
   } else if (event == Button::RELEASED_EVENT) {
-    reset_repeat();
+    resetRepeat();
   }
 }
 
-void actionCallback(Button::CALLBACK_EVENT event, uint8_t id) {
+static void actionCallback(Button::CALLBACK_EVENT event, uint8_t id) {
   if (event == Button::PRESSED_EVENT) {
     Serial.println("Action");
-    action();
+    modeCurrent()->action();
   } else if (event == Button::HELD_EVENT) {
     Serial.println("Hold");
-    hold();
+    modeCurrent()->hold();
   }
-}
-
-void minus() {
-  modeCurrent()->minus();
-}
-
-void plus() {
-  modeCurrent()->plus();
-}
-
-void action() {
-  modeCurrent()->action();
-}
-
-void hold() {
-  modeCurrent()->hold();
-}
-
-void reset_repeat() {
-  repeat_ms = REPEAT_MS;
-  repeat_count = 0;
-  timer.cancel();
-}
-
-void update_repeat(bool (*operation)(void *argument)) {
-  repeat_count++;
-  timer.cancel();
-
-  if (repeat_count > 20)
-    repeat_ms = 25;
-  else if (repeat_count > 10)
-    repeat_ms = 50;
-  else if (repeat_count > 5)
-    repeat_ms = 100;
-  else if (repeat_count > 2)
-    repeat_ms = 200;
-
-  timer.every(repeat_ms, *operation);
-}
-
-bool timer_minus(void *argument) {
-    minus();
-    update_repeat(timer_minus);
-    return true;
-}
-
-bool timer_plus(void *argument) {
-    plus();
-    update_repeat(timer_plus);
-    return true;
 }

@@ -52,5 +52,5 @@ void MessageMode::action() {
 void MessageMode::display() {
   displayFontDefault();
 
-  displayPrint((char *)messages[displayIndex].c_str());
+  displayPrint(messages[displayIndex].c_str());
 }

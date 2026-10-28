@@ -49,39 +49,39 @@ void RiceMode::change(float amount) {
   restartUpdates();
 }
 
+// Cycles through label and value for units, rice and water
 void RiceMode::update() {
   if (rice == 0) {
-    snprintf(message, BUF_SIZE, "Units");
-    displayPrint(message);
+    displayPrint("Units");
     return;
   }
 
-  if (alternate == 0) {
-    alternate++;
+  switch (alternate) {
+  case 0:
     displayFontDefault();
-    snprintf(message, BUF_SIZE, "Units");
-    displayPrint(message);
-  } else if (alternate == 1) {
-    alternate++;
+    displayPrint("Units");
+    break;
+  case 1:
     displayFontWide();
-    snprintf(message, BUF_SIZE, "%.1f", rice);
-  } else if (alternate == 2) {
-    alternate++;
+    displayPrintf("%.1f", rice);
+    break;
+  case 2:
     displayFontDefault();
-    snprintf(message, BUF_SIZE, "Rice");
-  } else if (alternate == 3) {
-    alternate++;
+    displayPrint("Rice");
+    break;
+  case 3:
     displayFontWide();
-    snprintf(message, BUF_SIZE, "%.0f", rice * RICE_MULTIPLIER);
-  } else if (alternate == 4) {
-    alternate++;
+    displayPrintf("%.0f", rice * RICE_MULTIPLIER);
+    break;
+  case 4:
     displayFontDefault();
-    snprintf(message, BUF_SIZE, "Water");
-  } else if (alternate == 5) {
-    alternate = 0;
+    displayPrint("Water");
+    break;
+  case 5:
     displayFontWide();
-    snprintf(message, BUF_SIZE, "%.0f", rice * WATER_MULTIPLIER);
+    displayPrintf("%.0f", rice * WATER_MULTIPLIER);
+    break;
   }
 
-  displayPrint(message);
+  alternate = (alternate + 1) % 6;
 }

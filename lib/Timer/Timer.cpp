@@ -17,7 +17,6 @@ TimerMode::TimerMode() {
 void TimerMode::open() {
   start = seconds = 0;
   active = false;
-  displayFontWide();
   display();
 }
 
@@ -77,7 +76,6 @@ void TimerMode::startPause() {
     active = false;
     // Pausing after the alarm stops at zero
     seconds = max(secondsLeft(), 0);
-    displayFontWide();
     display();
   }
 }
@@ -91,34 +89,23 @@ int TimerMode::secondsLeft() {
 void TimerMode::reset() {
   seconds = 0;
   active = false;
-  displayFontWide();
   display();
 }
 
 void TimerMode::display() {
-  if (!active) {
-    snprintf(message, BUF_SIZE, "%d:%02d", seconds / 60, seconds % 60);
-    displayPrint(message);
-    return;
-  }
+  int left = active ? secondsLeft() : seconds;
 
-  int left = secondsLeft();
-
-  if (left == 0) {
+  if (active && left == 0)
     piezoPlay();
-  }
 
-  if (left >= 0) {
-    snprintf(message, BUF_SIZE, "%d:%02d", left / 60, left % 60);
-  } else if (left <= -3600) {
+  // Thin font when the text is too long for the wide one
+  if (left >= 3600 || left <= -600)
     displayFontThin();
-    snprintf(message, BUF_SIZE, "+%d:%02d:%02d", -1 * left / 3600, -1 * (left % 3600) / 60, -1 * left % 60);
-  } else if (left <= -600) {
-    displayFontThin();
-    snprintf(message, BUF_SIZE, "+%02d:%02d", -1 * (left % 3600) / 60, -1 * left % 60);
-  } else {
-    snprintf(message, BUF_SIZE, "+%d:%02d", -1 * left / 60, -1 * left % 60);
-  }
+  else
+    displayFontWide();
 
-  displayPrint(message);
+  if (left >= 0)
+    displayPrintf("%s", formatDuration(left));
+  else
+    displayPrintf("+%s", formatDuration(-left));
 }

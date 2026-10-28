@@ -8,15 +8,13 @@
 // Seconds to keep the setup portal open before continuing without WiFi
 #define PORTAL_TIMEOUT 180
 
-void portalStarted(WiFiManager *wm) {
-  snprintf(message, BUF_SIZE, "Setup");
-  displayPrint(message);
+static void portalStarted(WiFiManager *wm) {
+  displayPrint("Setup");
   Serial.println("WiFi setup portal started, connect to " + wm->getConfigPortalSSID());
 }
 
 void networkSetup() {
-  snprintf(message, BUF_SIZE, "WiFi");
-  displayPrint(message);
+  displayPrint("WiFi");
 
   WiFiManager wm;
   wm.setAPCallback(portalStarted);

@@ -16,9 +16,10 @@ MQTTClient client;
 // Keep each attempt short, it blocks the main loop while running
 #define CONNECT_TIMEOUT 1000
 
-unsigned long lastConnectAttempt = 0;
+static unsigned long lastConnectAttempt = 0;
 
-void messageReceived(String &topic, String &payload);
+static void connect();
+static void messageReceived(String &topic, String &payload);
 
 void mqttSetup() {
   // Note: Local domain names (e.g. "Computer.local" on OSX) are not supported
@@ -42,7 +43,7 @@ void mqttPublish() {
   client.publish("more-time/timer", "world");
 }
 
-void connect() {
+static void connect() {
   lastConnectAttempt = millis();
 
   if (WiFi.status() != WL_CONNECTED)
@@ -59,7 +60,7 @@ void connect() {
   client.subscribe("more-time/#");
 }
 
-void messageReceived(String &topic, String &payload) {
+static void messageReceived(String &topic, String &payload) {
   Serial.println("Incoming: " + topic + " - " + payload);
 
   if (topic == "more-time/message") {

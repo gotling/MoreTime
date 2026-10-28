@@ -64,6 +64,5 @@ void MenuMode::update() {
 }
 
 void MenuMode::display() {
-  snprintf(message, BUF_SIZE, "%s", menuItems[index]->name());
-  displayPrint(message);
+  displayPrint(menuItems[index]->name());
 }

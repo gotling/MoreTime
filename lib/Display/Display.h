@@ -1,32 +1,25 @@
-#include <MD_MAX72xx.h>
-#include <MD_Parola.h>
-
 #ifndef _DISPLAY_H_
 #define _DISPLAY_H_
 
-#define HARDWARE_TYPE MD_MAX72XX::FC16_HW
-#define MAX_DEVICES 4
-#define CLK_PIN D5   // or SCK
-#define DATA_PIN D7  // or MOSI
-#define CS_PIN D8    // or SS
+#include <stdint.h>
 
-#define CHAR_SPACING 1    // Pixels between characters
-#define USE_LOCAL_FONT 1  // Use font from Font_Data.h
 #define BRIGHTNESS 2
-
-#define BUF_SIZE 16
-extern char message[BUF_SIZE];
-extern char oldMessage[BUF_SIZE];
 
 extern void displaySetup();
 extern void displayLoop();
-extern void displayPrint(char* text);
-extern void displayPrintLeft(char* text);
-extern void displayAlign(enum textPosition_t);
+extern void displayPrint(const char *text);
+// Like printf, output longer than the display buffer is cut off
+extern void displayPrintf(const char *format, ...) __attribute__((format(printf, 1, 2)));
 extern void displayFontWide();
 extern void displayFontThin();
 extern void displayFontDefault();
 extern void displayBrightness(uint8_t intensity);
 extern void displayShutdown(bool off);
+
+// Format seconds as m:ss, minutes above 59 are not turned into hours.
+// Returns a shared buffer, so use only one result per displayPrintf.
+extern const char *formatMinutes(unsigned int seconds);
+// Format seconds as h:mm:ss from one hour, otherwise m:ss
+extern const char *formatDuration(unsigned int seconds);
 
 #endif

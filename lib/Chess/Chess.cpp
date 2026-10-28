@@ -136,8 +136,7 @@ int ChessMode::secondsLeftBlack() {
 
 void ChessMode::display() {
   if (!active) {
-    snprintf(message, BUF_SIZE, "%d:%02d", seconds / 60, seconds % 60);
-    displayPrint(message);
+    displayPrintf("%s", formatMinutes(seconds));
     return;
   }
 
@@ -146,21 +145,14 @@ void ChessMode::display() {
 
   if ((leftWhite <= 0) || (leftBlack <= 0)) {
     piezoPlay();
-
-    if (leftWhite <= 0)
-      snprintf(message, BUF_SIZE, "Black");
-    else
-      snprintf(message, BUF_SIZE, "White");
-
     ticking = false;
     over = true;
+    // Show the winner
     displayFontDefault();
+    displayPrint(leftWhite <= 0 ? "Black" : "White");
+  } else if (white) {
+    displayPrintf("< %s", formatMinutes(leftWhite));
   } else {
-    if (white)
-      snprintf(message, BUF_SIZE, "< %d:%02d", leftWhite / 60, leftWhite % 60);
-    else
-      snprintf(message, BUF_SIZE, "%d:%02d >", leftBlack / 60, leftBlack % 60);
+    displayPrintf("%s >", formatMinutes(leftBlack));
   }
-
-  displayPrint(message);
 }

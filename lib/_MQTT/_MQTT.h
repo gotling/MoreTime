@@ -4,7 +4,6 @@
 extern void mqttSetup();
 extern void mqttLoop();
 
-void mqttPublish();
-void connect();
+extern void mqttPublish();
 
 #endif

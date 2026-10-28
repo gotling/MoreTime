@@ -41,13 +41,13 @@ const uint8_t soundCount = sizeof(sounds) / sizeof(Sound);
 // Spark, used until a sound is picked in the menu
 #define DEFAULT_SOUND 4
 
-uint8_t alarmSound = DEFAULT_SOUND;
+static uint8_t alarmSound = DEFAULT_SOUND;
 
-const Sound *playing = nullptr;
-uint8_t notePosition = 0;
-uint8_t repeatLeft = 0;
-unsigned long noteStart = 0;
-unsigned long lastDecayStep = 0;
+static const Sound *playing = nullptr;
+static uint8_t notePosition = 0;
+static uint8_t repeatLeft = 0;
+static unsigned long noteStart = 0;
+static unsigned long lastDecayStep = 0;
 
 void piezoSetup()
 {
@@ -66,7 +66,7 @@ void piezoIdle()
   pinMode(PIEZO_PIN, INPUT);
 }
 
-void piezoTone(uint16_t frequency, uint16_t duty)
+static void piezoTone(uint16_t frequency, uint16_t duty)
 {
   uint32_t period = 1000000UL / frequency;
   uint32_t high = period * duty / 1000;
@@ -77,7 +77,7 @@ void piezoTone(uint16_t frequency, uint16_t duty)
   startWaveform(PIEZO_PIN, high, period - high);
 }
 
-void piezoStartNote()
+static void piezoStartNote()
 {
   const Note &note = playing->notes[notePosition];
   noteStart = millis();
@@ -92,7 +92,7 @@ void piezoStartNote()
   }
 }
 
-void piezoStart(const Sound *sound, uint8_t repeat)
+static void piezoStart(const Sound *sound, uint8_t repeat)
 {
   playing = sound;
   notePosition = 0;

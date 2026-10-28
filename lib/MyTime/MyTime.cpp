@@ -36,7 +36,6 @@ void TimeMode::hold() {
 
 void TimeMode::update() {
   if (ntpTimeSet()) {
-    snprintf(message, BUF_SIZE, "%02d:%02d", ntpHour(), ntpMinute());
-    displayPrint(message);
+    displayPrintf("%02d:%02d", ntpHour(), ntpMinute());
   }
 }

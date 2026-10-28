@@ -100,22 +100,21 @@ void HumMode::apply() {
 void HumMode::display() {
   switch (test) {
   case Brightness:
-    snprintf(message, BUF_SIZE, "Bri %d", brightness);
+    displayPrintf("Bri %d", brightness);
     break;
   case WiFiSleep:
-    snprintf(message, BUF_SIZE, "%s", wifiSleepLabels[wifiSleep]);
+    displayPrint(wifiSleepLabels[wifiSleep]);
     break;
   case Display:
-    snprintf(message, BUF_SIZE, "D %s", displayOn ? "on" : "off");
+    displayPrintf("D %s", displayOn ? "on" : "off");
     break;
   case LoopDelay:
-    snprintf(message, BUF_SIZE, "L %u", loopDelays[loopDelay]);
+    displayPrintf("L %u", loopDelays[loopDelay]);
     break;
   case Piezo:
-    snprintf(message, BUF_SIZE, "P %s", piezoLow ? "low" : "hiZ");
+    displayPrintf("P %s", piezoLow ? "low" : "hiZ");
     break;
   }
-  displayPrint(message);
 }
 
 // Called every loop, to test if a slower loop changes the hum

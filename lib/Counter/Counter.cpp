@@ -33,6 +33,5 @@ void CounterMode::reset() {
 }
 
 void CounterMode::display() {
-  snprintf(message, BUF_SIZE, "%d", counter);
-  displayPrint(message);
+  displayPrintf("%d", counter);
 }
