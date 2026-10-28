@@ -72,25 +72,25 @@ void displayCurrent() {
   switch (menuMode)
   {
   case MenuStopWatch:
-    sprintf(message, "Chrono");
+    snprintf(message, BUF_SIZE, "Chrono");
     break;
   case MenuTimer:
-    sprintf(message, "Timer");
+    snprintf(message, BUF_SIZE, "Timer");
     break;
   case MenuCounter:
-    sprintf(message, "Counter");
+    snprintf(message, BUF_SIZE, "Counter");
     break;
   case MenuTime:
-    sprintf(message, "Time");
+    snprintf(message, BUF_SIZE, "Time");
     break;
   case MenuChess:
-    sprintf(message, "Chess");
+    snprintf(message, BUF_SIZE, "Chess");
     break;
   case MenuRice:
-    sprintf(message, "Rice");
+    snprintf(message, BUF_SIZE, "Rice");
     break;
   default:
-    sprintf(message, "Unknown");
+    snprintf(message, BUF_SIZE, "Unknown");
     break;
   }
   displayPrint(message);

@@ -66,7 +66,7 @@ void stopWatchReset() {
 
 void stopWatchDisplay() {
   if (start == 0) {
-    sprintf(message, "0.0");
+    snprintf(message, BUF_SIZE, "0.0");
     displayPrint(message);
     return;
   }
@@ -76,13 +76,13 @@ void stopWatchDisplay() {
 
   if (seconds >= 3600) {
     displayFontThin();
-    sprintf(message, "%d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, seconds % 60);
+    snprintf(message, BUF_SIZE, "%d:%02d:%02d", seconds / 3600, (seconds % 3600) / 60, seconds % 60);
   } else if (seconds >= 600) {
-    sprintf(message, "%02d:%02d", seconds / 60, seconds % 60);
+    snprintf(message, BUF_SIZE, "%02d:%02d", seconds / 60, seconds % 60);
   } else if (seconds >= 60) {
-    sprintf(message, "%d:%02d", seconds / 60, seconds % 60);
+    snprintf(message, BUF_SIZE, "%d:%02d", seconds / 60, seconds % 60);
   } else {
-    sprintf(message, "%.1f", (float)diff / 1000);
+    snprintf(message, BUF_SIZE, "%.1f", (float)diff / 1000);
   }
 
   displayPrint(message);

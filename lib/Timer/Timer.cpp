@@ -106,7 +106,7 @@ void timerSetTime(unsigned int seconds) {
 
 void timerDisplay() {
   if (!active) {
-    sprintf(message, "%d:%02d", timerSeconds / 60, timerSeconds % 60);
+    snprintf(message, BUF_SIZE, "%d:%02d", timerSeconds / 60, timerSeconds % 60);
     displayPrint(message);
     return;
   }
@@ -118,15 +118,15 @@ void timerDisplay() {
   }
 
   if (seconds >= 0) {
-    sprintf(message, "%d:%02d", seconds / 60, seconds % 60);
+    snprintf(message, BUF_SIZE, "%d:%02d", seconds / 60, seconds % 60);
   } else if (seconds <= -3600) {
     displayFontThin();
-    sprintf(message, "+%d:%02d:%02d", -1 * seconds / 3600, -1 * (seconds % 3600) / 60, -1 * seconds % 60);
+    snprintf(message, BUF_SIZE, "+%d:%02d:%02d", -1 * seconds / 3600, -1 * (seconds % 3600) / 60, -1 * seconds % 60);
   } else if (seconds <= -600) {
     displayFontThin();
-    sprintf(message, "+%02d:%02d", -1 * (seconds % 3600) / 60, -1 * seconds % 60);
+    snprintf(message, BUF_SIZE, "+%02d:%02d", -1 * (seconds % 3600) / 60, -1 * seconds % 60);
   } else {
-    sprintf(message, "+%d:%02d", -1 * seconds / 60, -1 * seconds % 60);
+    snprintf(message, BUF_SIZE, "+%d:%02d", -1 * seconds / 60, -1 * seconds % 60);
   }
 
   displayPrint(message);

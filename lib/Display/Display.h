@@ -14,7 +14,7 @@
 #define USE_LOCAL_FONT 1  // Use font from Font_Data.h
 #define BRIGHTNESS 2
 
-#define BUF_SIZE 12
+#define BUF_SIZE 16
 extern char message[BUF_SIZE];
 extern char oldMessage[BUF_SIZE];
 

@@ -75,7 +75,7 @@ void riceSetup() {}
 
 void riceDisplay() {
   if (state.rice == 0) {
-    sprintf(message, "Units");
+    snprintf(message, BUF_SIZE, "Units");
     displayPrint(message);
     return;
   }
@@ -83,28 +83,28 @@ void riceDisplay() {
   if (alternate == 0) {
     alternate++;
     displayFontDefault();
-    sprintf(message, "Units");
+    snprintf(message, BUF_SIZE, "Units");
     displayPrint(message);
   } else if (alternate == 1) {
     alternate++;
     displayFontWide();
-    sprintf(message, "%.1f", state.rice);
+    snprintf(message, BUF_SIZE, "%.1f", state.rice);
   } else if (alternate == 2) {
     alternate++;
     displayFontDefault();
-    sprintf(message, "Rice");
+    snprintf(message, BUF_SIZE, "Rice");
   } else if (alternate == 3) {
     alternate++;
     displayFontWide();
-    sprintf(message, "%.0f", state.rice * RICE_MULTIPLIER);
+    snprintf(message, BUF_SIZE, "%.0f", state.rice * RICE_MULTIPLIER);
   } else if (alternate == 4) {
     alternate++;
     displayFontDefault();
-    sprintf(message, "Water");
+    snprintf(message, BUF_SIZE, "Water");
   } else if (alternate == 5) {
     alternate = 0;
     displayFontWide();
-    sprintf(message, "%.0f", state.rice * WATER_MULTIPLIER);
+    snprintf(message, BUF_SIZE, "%.0f", state.rice * WATER_MULTIPLIER);
   }
 
   displayPrint(message);

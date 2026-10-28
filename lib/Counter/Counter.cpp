@@ -12,19 +12,19 @@ void counterOpen() {
 
 void counterMinus() {
   state.counter--;
-  sprintf(message, "%d", state.counter);
+  snprintf(message, BUF_SIZE, "%d", state.counter);
   displayPrint(message);
 }
 
 void counterPlus() {
   state.counter++;
-  sprintf(message, "%d", state.counter);
+  snprintf(message, BUF_SIZE, "%d", state.counter);
   displayPrint(message);
 }
 
 void counterAction() {
   state.counter = 0;
-  sprintf(message, "%d", state.counter);
+  snprintf(message, BUF_SIZE, "%d", state.counter);
   displayPrint(message);
 }
 

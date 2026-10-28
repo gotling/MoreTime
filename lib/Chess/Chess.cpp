@@ -139,7 +139,7 @@ int secondsLeftBlack() {
 
 void chessDisplay() {
   if (!chessActive) {
-    sprintf(message, "%d:%02d", chessSeconds / 60, chessSeconds % 60);
+    snprintf(message, BUF_SIZE, "%d:%02d", chessSeconds / 60, chessSeconds % 60);
     displayPrint(message);
     return;
   }
@@ -151,17 +151,17 @@ void chessDisplay() {
     piezoPlay();
 
     if (secondsWhite <= 0)
-      sprintf(message, "Black");
+      snprintf(message, BUF_SIZE, "Black");
     else
-      sprintf(message, "White");
+      snprintf(message, BUF_SIZE, "White");
 
     chessDisplayTimer.cancel();
     displayFontDefault();
   } else {
     if (chessWhite)
-      sprintf(message, "< %d:%02d", secondsWhite / 60, secondsWhite % 60);
+      snprintf(message, BUF_SIZE, "< %d:%02d", secondsWhite / 60, secondsWhite % 60);
     else
-      sprintf(message, "%d:%02d >", secondsBlack / 60, secondsBlack % 60);
+      snprintf(message, BUF_SIZE, "%d:%02d >", secondsBlack / 60, secondsBlack % 60);
   }
 
   displayPrint(message);

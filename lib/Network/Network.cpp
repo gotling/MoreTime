@@ -9,13 +9,13 @@
 #define PORTAL_TIMEOUT 180
 
 void portalStarted(WiFiManager *wm) {
-  sprintf(message, "Setup");
+  snprintf(message, BUF_SIZE, "Setup");
   displayPrint(message);
   Serial.println("WiFi setup portal started, connect to " + wm->getConfigPortalSSID());
 }
 
 void networkSetup() {
-  sprintf(message, "WiFi");
+  snprintf(message, BUF_SIZE, "WiFi");
   displayPrint(message);
 
   WiFiManager wm;

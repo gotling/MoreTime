@@ -33,7 +33,7 @@ void timeAction() {
 
 void timeDisplay() {
   if (ntpTimeSet()) {
-    sprintf(message, "%02d:%02d", ntpHour(), ntpMinute());
+    snprintf(message, BUF_SIZE, "%02d:%02d", ntpHour(), ntpMinute());
     displayPrint(message);
   }
 }
