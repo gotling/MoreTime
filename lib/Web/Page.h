@@ -12,6 +12,9 @@ static const char PAGE[] PROGMEM = R"PAGE(<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#16181d">
 <title>MoreTime</title>
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" href="/icon-192.png">
+<link rel="apple-touch-icon" href="/icon-192.png">
 <style>
 :root {
   --bg: #f4f4f1; --card: #ffffff; --text: #1d1f24; --muted: #6b6f78;
@@ -202,9 +205,61 @@ for (const id of ["timer-pause", "timer-resume", "timer-stop",
 refresh();
 setInterval(refresh, 1000);
 setInterval(render, 100);
+
+// Makes the page installable as an app. Browsers only allow it over HTTPS.
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("/sw.js");
 </script>
 </body>
 </html>
 )PAGE";
+
+// Describes the installed app
+static const char MANIFEST[] PROGMEM = R"JSON({
+  "name": "MoreTime",
+  "short_name": "MoreTime",
+  "description": "Start and stop the MoreTime timer and stopwatch",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#16181d",
+  "theme_color": "#16181d",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
+)JSON";
+
+// Network first so a firmware update shows the new page right away, the saved
+// copy is only used when the device cannot be reached. The API is never cached.
+static const char SERVICE_WORKER[] PROGMEM = R"JS(const CACHE = "moretime-v1";
+
+self.addEventListener("install", (event) => {
+  event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(["/", "/manifest.json", "/icon-192.png"])));
+  self.skipWaiting();
+});
+
+self.addEventListener("activate", (event) => {
+  event.waitUntil(caches.keys().then((keys) =>
+    Promise.all(keys.filter((key) => key !== CACHE).map((key) => caches.delete(key)))));
+  self.clients.claim();
+});
+
+self.addEventListener("fetch", (event) => {
+  const url = new URL(event.request.url);
+  if (event.request.method !== "GET" || url.pathname.startsWith("/api/")) return;
+
+  event.respondWith(
+    fetch(event.request)
+      .then((response) => {
+        const copy = response.clone();
+        caches.open(CACHE).then((cache) => cache.put(event.request, copy));
+        return response;
+      })
+      .catch(() => caches.match(event.request))
+  );
+});
+)JS";
 
 #endif

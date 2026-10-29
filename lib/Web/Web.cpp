@@ -8,6 +8,7 @@
 #include <Remote.h>
 
 #include "Page.h"
+#include "Icons.h"
 
 #define HTTP_PORT 80
 #define JSON_SIZE 192
@@ -28,6 +29,21 @@ static void sendError(int code, const char *message) {
 
 static void handlePage() {
   server.send_P(200, "text/html", PAGE);
+}
+
+static void handleManifest() {
+  server.send_P(200, "application/manifest+json", MANIFEST);
+}
+
+static void handleServiceWorker() {
+  // Let the browser pick up a new version after a firmware update
+  server.sendHeader("Cache-Control", "no-cache");
+  server.send_P(200, "text/javascript", SERVICE_WORKER);
+}
+
+static void sendIcon(const uint8_t *icon, size_t size) {
+  server.sendHeader("Cache-Control", "max-age=86400");
+  server.send_P(200, "image/png", (PGM_P)icon, size);
 }
 
 static void handleRequest() {
@@ -70,6 +86,10 @@ static void handleRequest() {
 
 void webSetup() {
   server.on("/", HTTP_GET, handlePage);
+  server.on("/manifest.json", HTTP_GET, handleManifest);
+  server.on("/sw.js", HTTP_GET, handleServiceWorker);
+  server.on("/icon-192.png", HTTP_GET, []() { sendIcon(ICON_192, sizeof(ICON_192)); });
+  server.on("/icon-512.png", HTTP_GET, []() { sendIcon(ICON_512, sizeof(ICON_512)); });
   server.onNotFound(handleRequest);
   server.begin();
 

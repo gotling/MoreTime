@@ -35,7 +35,9 @@ void TimeMode::hold() {
 }
 
 void TimeMode::update() {
-  if (ntpTimeSet()) {
+  // Placeholder until the time is synced, so the display is never blank
+  if (ntpTimeSet())
     displayPrintf("%02d:%02d", ntpHour(), ntpMinute());
-  }
+  else
+    displayPrint("--:--");
 }
