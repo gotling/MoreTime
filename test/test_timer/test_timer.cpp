@@ -120,6 +120,35 @@ void test_reopening_starts_from_zero() {
   TEST_ASSERT_EQUAL_STRING("0:00", displayText.c_str());
 }
 
+void test_remote_none_until_started() {
+  timerMode.plus();
+  TEST_ASSERT_EQUAL(RemoteState::None, timerMode.remoteState().kind);
+}
+
+void test_remote_running() {
+  startOneMinute();
+  advance(1500);
+  RemoteState state = timerMode.remoteState();
+  TEST_ASSERT_EQUAL(RemoteState::Timer, state.kind);
+  TEST_ASSERT_TRUE(state.running);
+  TEST_ASSERT_EQUAL(58500, state.ms);
+}
+
+void test_remote_paused() {
+  startOneMinute();
+  advance(20000);
+  timerMode.action();
+  RemoteState state = timerMode.remoteState();
+  TEST_ASSERT_FALSE(state.running);
+  TEST_ASSERT_EQUAL(40000, state.ms);
+}
+
+void test_remote_none_after_reset() {
+  startOneMinute();
+  timerMode.hold();
+  TEST_ASSERT_EQUAL(RemoteState::None, timerMode.remoteState().kind);
+}
+
 int main() {
   UNITY_BEGIN();
   RUN_TEST(test_opens_at_zero);
@@ -135,5 +164,9 @@ int main() {
   RUN_TEST(test_hold_resets_then_returns_to_clock);
   RUN_TEST(test_an_hour_or_more_uses_thin_font);
   RUN_TEST(test_reopening_starts_from_zero);
+  RUN_TEST(test_remote_none_until_started);
+  RUN_TEST(test_remote_running);
+  RUN_TEST(test_remote_paused);
+  RUN_TEST(test_remote_none_after_reset);
   return UNITY_END();
 }

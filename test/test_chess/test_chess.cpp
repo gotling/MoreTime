@@ -143,6 +143,25 @@ void test_hold_resets_then_returns_to_clock() {
   TEST_ASSERT_EQUAL_PTR(&timeMode, modeCurrent());
 }
 
+void test_remote_state() {
+  TEST_ASSERT_EQUAL(RemoteState::None, chessMode.remoteState().kind);
+
+  startFiveMinutes();
+  advance(1000);
+  RemoteState state = chessMode.remoteState();
+  TEST_ASSERT_EQUAL(RemoteState::Chess, state.kind);
+  TEST_ASSERT_TRUE(state.running);
+  TEST_ASSERT_TRUE(state.white);
+  TEST_ASSERT_EQUAL(299000, state.ms);
+  TEST_ASSERT_EQUAL(300000, state.blackMs);
+
+  chessMode.minus();
+  state = chessMode.remoteState();
+  TEST_ASSERT_FALSE(state.white);
+  TEST_ASSERT_EQUAL(309000, state.ms);
+  TEST_ASSERT_EQUAL(300000, state.blackMs);
+}
+
 int main() {
   UNITY_BEGIN();
   RUN_TEST(test_opens_at_fifteen_minutes);
@@ -157,5 +176,6 @@ int main() {
   RUN_TEST(test_action_after_game_over_returns_to_setup);
   RUN_TEST(test_new_game_starts_with_white);
   RUN_TEST(test_hold_resets_then_returns_to_clock);
+  RUN_TEST(test_remote_state);
   return UNITY_END();
 }

@@ -49,6 +49,23 @@ void test_action_resets_then_returns_to_clock() {
   TEST_ASSERT_EQUAL_PTR(&timeMode, modeCurrent());
 }
 
+void test_remote_running_paused_and_reset() {
+  advance(1500);
+  RemoteState state = stopWatchMode.remoteState();
+  TEST_ASSERT_EQUAL(RemoteState::StopWatch, state.kind);
+  TEST_ASSERT_TRUE(state.running);
+  TEST_ASSERT_EQUAL(1500, state.ms);
+
+  stopWatchMode.plus();
+  advance(1000);
+  state = stopWatchMode.remoteState();
+  TEST_ASSERT_FALSE(state.running);
+  TEST_ASSERT_EQUAL(1500, state.ms);
+
+  stopWatchMode.action();
+  TEST_ASSERT_EQUAL(RemoteState::None, stopWatchMode.remoteState().kind);
+}
+
 int main() {
   UNITY_BEGIN();
   RUN_TEST(test_starts_running_on_open);
@@ -56,5 +73,6 @@ int main() {
   RUN_TEST(test_shows_minutes);
   RUN_TEST(test_shows_hours_in_thin_font);
   RUN_TEST(test_action_resets_then_returns_to_clock);
+  RUN_TEST(test_remote_running_paused_and_reset);
   return UNITY_END();
 }

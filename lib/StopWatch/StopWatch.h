@@ -2,6 +2,7 @@
 #define _STOPWATCH_H_
 
 #include <Mode.h>
+#include <Remote.h>
 
 // Starts on open. Plus pauses and resumes, action resets or returns to the clock.
 class StopWatchMode : public Mode {
@@ -13,6 +14,12 @@ public:
   void plus() override;
   void action() override;
   void update() override;
+
+  // Running or paused stopwatch for other devices to mirror
+  RemoteState remoteState();
+
+  // Show elapsed time. Shared with the mirror.
+  static void show(unsigned long elapsedMs);
 
 private:
   bool running = false;

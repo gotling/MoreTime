@@ -15,6 +15,14 @@ To add a mode:
 1. Create `lib/MyMode/MyMode.h` and `.cpp` with a class inheriting from `Mode` and a global instance, e.g. `extern MyMode myMode;`.
 2. Add `&myMode` to `menuItems` in `lib/Menu/Menu.cpp`.
 
+# Several devices
+
+Devices on the same network show each other's timer, stopwatch and chess clock. While one is running or paused, the device broadcasts its state over UDP port 4210 every second. Another device showing the clock switches to mirror it, sounds the alarm when it ends and returns to the clock when it stops or nothing is heard for 5 seconds. Pressing a button on the mirroring device returns it to the clock until the next session. All devices run the same firmware, a device without buttons simply only mirrors.
+
+To watch the messages from a computer on the same network:
+
+    nc -ul 4210
+
 # Tests
 
 Unit tests run on the computer, not the device:

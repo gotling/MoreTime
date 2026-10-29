@@ -2,6 +2,7 @@
 #define _TIMER_H_
 
 #include <Mode.h>
+#include <Remote.h>
 
 // Countdown timer in 30 second steps. Keeps counting past zero after the alarm.
 class TimerMode : public Mode {
@@ -18,9 +19,16 @@ public:
 
   void setTime(int seconds);
   void startPause();
+  // Running or paused timer for other devices to mirror
+  RemoteState remoteState();
+
+  // Show time left, negative after the alarm. Shared with the mirror.
+  static void show(int left);
 
 private:
   bool active = false;
+  // Started and not reset, so paused counts as well
+  bool started = false;
   unsigned long start = 0;
   int seconds = 0;
 

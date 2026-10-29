@@ -63,19 +63,32 @@ void StopWatchMode::reset() {
 }
 
 void StopWatchMode::display() {
-  if (start == 0) {
-    displayPrint("0.0");
-    return;
-  }
+  show(start == 0 ? 0 : millis() - start + previous);
+}
 
-  unsigned long diff = millis() - start + previous;
-  unsigned int seconds = diff / 1000;
+void StopWatchMode::show(unsigned long elapsedMs) {
+  unsigned int seconds = elapsedMs / 1000;
 
   if (seconds >= 3600)
     displayFontThin();
+  else
+    displayFontWide();
 
   if (seconds >= 60)
     displayPrintf("%s", formatDuration(seconds));
   else
-    displayPrintf("%.1f", (float)diff / 1000);
+    displayPrintf("%.1f", (float)elapsedMs / 1000);
+}
+
+RemoteState StopWatchMode::remoteState() {
+  RemoteState state;
+  if (!started())
+    return state;
+
+  state.kind = RemoteState::StopWatch;
+  state.running = running;
+  state.ms = previous;
+  if (running)
+    state.ms += millis() - start;
+  return state;
 }

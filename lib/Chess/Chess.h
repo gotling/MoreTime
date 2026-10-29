@@ -2,6 +2,7 @@
 #define _CHESS_H_
 
 #include <Mode.h>
+#include <Remote.h>
 
 // Chess clock. Before start minus/plus set the time in 5 minute steps.
 // During a game minus hands the turn to black and action to white.
@@ -16,6 +17,13 @@ public:
   void action() override;
   void hold() override;
   void update() override;
+
+  // Game in progress or just finished, for other devices to mirror
+  RemoteState remoteState();
+
+  // Show the time left for the player to move. Shared with the mirror.
+  static void show(int left, bool white);
+  static void showWinner(bool whiteLost);
 
 private:
   bool active = false;

@@ -18,12 +18,14 @@ TimerMode::TimerMode() {
 void TimerMode::open() {
   start = seconds = 0;
   active = false;
+  started = false;
   display();
 }
 
 void TimerMode::close() {
   seconds = 0;
   active = false;
+  started = false;
 }
 
 void TimerMode::minus() {
@@ -71,12 +73,14 @@ void TimerMode::setTime(int newSeconds) {
 void TimerMode::startPause() {
   if (!active) {
     active = true;
+    started = true;
     start = millis();
     restartUpdates();
   } else {
     active = false;
     // Pausing after the alarm stops at zero
     seconds = max(secondsLeft(), 0);
+    started = seconds > 0;
     display();
   }
 }
@@ -90,6 +94,7 @@ int TimerMode::secondsLeft() {
 void TimerMode::reset() {
   seconds = 0;
   active = false;
+  started = false;
   display();
 }
 
@@ -99,6 +104,10 @@ void TimerMode::display() {
   if (active && left == 0)
     piezoPlay();
 
+  show(left);
+}
+
+void TimerMode::show(int left) {
   // Thin font when the text is too long for the wide one
   if (left >= 3600 || left <= -600)
     displayFontThin();
@@ -109,4 +118,17 @@ void TimerMode::display() {
     displayPrintf("%s", formatDuration(left));
   else
     displayPrintf("+%s", formatDuration(-left));
+}
+
+RemoteState TimerMode::remoteState() {
+  RemoteState state;
+  if (!started)
+    return state;
+
+  state.kind = RemoteState::Timer;
+  state.running = active;
+  state.ms = (long)seconds * 1000;
+  if (active)
+    state.ms -= (long)(millis() - start);
+  return state;
 }

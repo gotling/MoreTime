@@ -5,6 +5,7 @@
 #include <Network.h>
 #include <NTP.h>
 #include <Piezo.h>
+#include <Sync.h>
 // #include <_MQTT.h>
 #include <Mode.h>
 #include <MyTime.h>
@@ -18,6 +19,7 @@ void setup() {
   networkSetup();
   ntpSetup();
   piezoSetup();
+  syncSetup();
   // mqttSetup();
 
   Serial.println("TiME started");
@@ -29,5 +31,6 @@ void loop() {
   modeLoop();
   displayLoop();
   piezoLoop();
+  syncLoop();
   // mqttLoop();
 }

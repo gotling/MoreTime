@@ -153,12 +153,39 @@ void ChessMode::display() {
     piezoPlay();
     ticking = false;
     over = true;
-    // Show the winner
-    displayFontDefault();
-    displayPrint(white ? "Black" : "White");
-  } else if (white) {
-    displayPrintf("< %s", formatMinutes(left));
+    showWinner(white);
   } else {
-    displayPrintf("%s >", formatMinutes(left));
+    show(left, white);
   }
+}
+
+void ChessMode::show(int left, bool white) {
+  displayFontThin();
+  if (white)
+    displayPrintf("< %s", formatMinutes(left));
+  else
+    displayPrintf("%s >", formatMinutes(left));
+}
+
+void ChessMode::showWinner(bool whiteLost) {
+  displayFontDefault();
+  displayPrint(whiteLost ? "Black" : "White");
+}
+
+RemoteState ChessMode::remoteState() {
+  RemoteState state;
+  if (!active)
+    return state;
+
+  state.kind = RemoteState::Chess;
+  state.running = ticking;
+  state.white = white;
+  state.over = over;
+  state.ms = (long)secondsWhite * 1000;
+  state.blackMs = (long)secondsBlack * 1000;
+  if (ticking && white)
+    state.ms -= (long)(millis() - startWhite);
+  if (ticking && !white)
+    state.blackMs -= (long)(millis() - startBlack);
+  return state;
 }
