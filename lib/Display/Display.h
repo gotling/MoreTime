@@ -10,6 +10,11 @@ extern void displayLoop();
 extern void displayPrint(const char *text);
 // Like printf, output longer than the display buffer is cut off
 extern void displayPrintf(const char *format, ...) __attribute__((format(printf, 1, 2)));
+// Scroll text across once, returns when done
+extern void displayScroll(const char *text);
+// Scroll text across once while the main loop keeps running
+extern void displayScrollStart(const char *text);
+extern bool displayScrollDone();
 extern void displayFontWide();
 extern void displayFontThin();
 extern void displayFontDefault();

@@ -10,6 +10,7 @@
 #include <Chess.h>
 #include <Rice.h>
 #include <Sound.h>
+#include <Ip.h>
 #include <Hum.h>
 
 #define IDLE_MS 10000
@@ -23,6 +24,7 @@ Mode *menuItems[] = {
   &chessMode,
   &riceMode,
   &soundMode,
+  &ipMode,
   &humMode,
 };
 const int menuItemCount = sizeof(menuItems) / sizeof(Mode *);

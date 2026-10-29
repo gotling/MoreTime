@@ -16,7 +16,7 @@ TimerMode::TimerMode() {
 }
 
 void TimerMode::open() {
-  start = seconds = 0;
+  startedAt = seconds = 0;
   active = false;
   started = false;
   display();
@@ -66,15 +66,28 @@ void TimerMode::update() {
     display();
 }
 
-void TimerMode::setTime(int newSeconds) {
+void TimerMode::start(int newSeconds) {
   seconds = newSeconds;
+  active = false;
+  startPause();
+  display();
+}
+
+void TimerMode::pause() {
+  if (active)
+    startPause();
+}
+
+void TimerMode::resume() {
+  if (!active && started)
+    startPause();
 }
 
 void TimerMode::startPause() {
   if (!active) {
     active = true;
     started = true;
-    start = millis();
+    startedAt = millis();
     restartUpdates();
   } else {
     active = false;
@@ -86,7 +99,7 @@ void TimerMode::startPause() {
 }
 
 int TimerMode::secondsLeft() {
-  unsigned long diffMs = millis() - start;
+  unsigned long diffMs = millis() - startedAt;
   unsigned int diff = diffMs / 1000;
   return seconds - diff;
 }
@@ -129,6 +142,6 @@ RemoteState TimerMode::remoteState() {
   state.running = active;
   state.ms = (long)seconds * 1000;
   if (active)
-    state.ms -= (long)(millis() - start);
+    state.ms -= (long)(millis() - startedAt);
   return state;
 }

@@ -48,7 +48,19 @@ void StopWatchMode::startPause() {
   } else {
     running = false;
     previous = previous + (millis() - start);
+    // Show the exact paused time, the last update can be up to 100 ms old
+    display();
   }
+}
+
+void StopWatchMode::pause() {
+  if (running)
+    startPause();
+}
+
+void StopWatchMode::resume() {
+  if (!running && started())
+    startPause();
 }
 
 bool StopWatchMode::started() {
@@ -63,7 +75,10 @@ void StopWatchMode::reset() {
 }
 
 void StopWatchMode::display() {
-  show(start == 0 ? 0 : millis() - start + previous);
+  if (start == 0)
+    show(0);
+  else
+    show(running ? millis() - start + previous : previous);
 }
 
 void StopWatchMode::show(unsigned long elapsedMs) {

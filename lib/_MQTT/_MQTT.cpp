@@ -69,7 +69,6 @@ static void messageReceived(String &topic, String &payload) {
   } else if (topic == "more-time/timer") {
     Serial.println("Timer");
     modeSwitch(&timerMode);
-    timerMode.setTime(atoi(payload.c_str()));
-    timerMode.startPause();
+    timerMode.start(atoi(payload.c_str()));
   }
 }

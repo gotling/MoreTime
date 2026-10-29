@@ -3,12 +3,9 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 
-#include <Mode.h>
 #include <Remote.h>
+#include <Control.h>
 #include <Mirror.h>
-#include <Timer.h>
-#include <StopWatch.h>
-#include <Chess.h>
 
 #define SYNC_PORT 4210
 // Send at least this often while something is active, the mirror times out after 5 s
@@ -33,17 +30,6 @@ void syncSetup() {
   Serial.printf("Sync: device %s listening on UDP %d\n", deviceId, SYNC_PORT);
 }
 
-static RemoteState localState() {
-  Mode *mode = modeCurrent();
-  if (mode == &timerMode)
-    return timerMode.remoteState();
-  if (mode == &stopWatchMode)
-    return stopWatchMode.remoteState();
-  if (mode == &chessMode)
-    return chessMode.remoteState();
-  return RemoteState();
-}
-
 static void send(const RemoteState &state) {
   char packet[PACKET_SIZE];
   if (!remoteEncode(state, deviceId, packet, PACKET_SIZE))
@@ -61,7 +47,7 @@ static void send(const RemoteState &state) {
 }
 
 static void sendLocal() {
-  RemoteState state = localState();
+  RemoteState state = controlState();
   bool changed = remoteChanged(state, lastSent);
   bool due = millis() - lastSentAt >= HEARTBEAT_MS;
 

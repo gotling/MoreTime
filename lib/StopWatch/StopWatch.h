@@ -15,6 +15,10 @@ public:
   void action() override;
   void update() override;
 
+  // Control without buttons, e.g. from the phone. The stopwatch must be the current mode.
+  void pause();
+  void resume();
+
   // Running or paused stopwatch for other devices to mirror
   RemoteState remoteState();
 

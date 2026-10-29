@@ -6,6 +6,7 @@
 #include <NTP.h>
 #include <Piezo.h>
 #include <Sync.h>
+#include <Web.h>
 // #include <_MQTT.h>
 #include <Mode.h>
 #include <MyTime.h>
@@ -20,6 +21,7 @@ void setup() {
   ntpSetup();
   piezoSetup();
   syncSetup();
+  webSetup();
   // mqttSetup();
 
   Serial.println("TiME started");
@@ -32,5 +34,6 @@ void loop() {
   displayLoop();
   piezoLoop();
   syncLoop();
+  webLoop();
   // mqttLoop();
 }

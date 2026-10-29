@@ -1,6 +1,7 @@
 #include <Display.h>
 
 #include <stdarg.h>
+#include <string.h>
 
 #include <MD_MAX72xx.h>
 #include <MD_Parola.h>
@@ -14,10 +15,14 @@
 #define CS_PIN D8    // or SS
 
 #define BUF_SIZE 16
+#define SCROLL_SIZE 32
+// ms per column
+#define SCROLL_SPEED 40
 
 MD_Parola myDisplay = MD_Parola(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
 
 static char message[BUF_SIZE];
+static char scroll[SCROLL_SIZE];
 
 void displaySetup()
 {
@@ -47,6 +52,22 @@ void displayPrintf(const char *format, ...) {
     va_end(args);
 
     displayPrint(message);
+}
+
+void displayScrollStart(const char *text) {
+    strncpy(scroll, text, SCROLL_SIZE - 1);
+    scroll[SCROLL_SIZE - 1] = '\0';
+    myDisplay.displayText(scroll, PA_LEFT, SCROLL_SPEED, 0, PA_SCROLL_LEFT, PA_SCROLL_LEFT);
+}
+
+bool displayScrollDone() {
+    return myDisplay.getZoneStatus(0);
+}
+
+void displayScroll(const char *text) {
+    displayScrollStart(text);
+    while (!myDisplay.displayAnimate())
+        yield();
 }
 
 void displayFontWide() {

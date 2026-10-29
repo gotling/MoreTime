@@ -27,6 +27,15 @@ void test_plus_pauses_and_resumes() {
   TEST_ASSERT_EQUAL_STRING("2.0", displayText.c_str());
 }
 
+void test_pause_shows_exact_time() {
+  // The display updates every 100 ms, pausing between updates must show the paused time
+  advance(1580);
+  TEST_ASSERT_EQUAL_STRING("1.5", displayText.c_str());
+  stopWatchMode.plus();
+  TEST_ASSERT_EQUAL_STRING("1.6", displayText.c_str());
+  TEST_ASSERT_EQUAL(1580, stopWatchMode.remoteState().ms);
+}
+
 void test_shows_minutes() {
   advance(61000);
   TEST_ASSERT_EQUAL_STRING("1:01", displayText.c_str());
@@ -70,6 +79,7 @@ int main() {
   UNITY_BEGIN();
   RUN_TEST(test_starts_running_on_open);
   RUN_TEST(test_plus_pauses_and_resumes);
+  RUN_TEST(test_pause_shows_exact_time);
   RUN_TEST(test_shows_minutes);
   RUN_TEST(test_shows_hours_in_thin_font);
   RUN_TEST(test_action_resets_then_returns_to_clock);

@@ -17,8 +17,11 @@ public:
   void hold() override;
   void update() override;
 
-  void setTime(int seconds);
-  void startPause();
+  // Control without buttons, e.g. from the phone. The timer must be the current mode.
+  void start(int seconds);
+  void pause();
+  void resume();
+
   // Running or paused timer for other devices to mirror
   RemoteState remoteState();
 
@@ -29,9 +32,10 @@ private:
   bool active = false;
   // Started and not reset, so paused counts as well
   bool started = false;
-  unsigned long start = 0;
+  unsigned long startedAt = 0;
   int seconds = 0;
 
+  void startPause();
   int secondsLeft();
   void reset();
   void display();
