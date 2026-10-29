@@ -3,6 +3,7 @@
 #include <Arduino.h>
 
 #include <Display.h>
+#include <Format.h>
 #include <MyTime.h>
 
 StopWatchMode stopWatchMode;

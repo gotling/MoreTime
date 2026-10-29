@@ -3,6 +3,7 @@
 #include <Arduino.h>
 
 #include <Display.h>
+#include <Format.h>
 #include <Piezo.h>
 #include <MyTime.h>
 
@@ -88,7 +89,11 @@ void ChessMode::update() {
     display();
 }
 
+// The player whose turn it was keeps the time they have left plus the increment
 void ChessMode::switchTo(bool toWhite) {
+  if (toWhite == white)
+    return;
+
   if (toWhite) {
     white = true;
     secondsBlack = secondsLeftBlack() + INCREMENT_SECONDS;
@@ -107,6 +112,7 @@ void ChessMode::start() {
 
   Serial.println("Start Chess");
   secondsWhite = secondsBlack = seconds;
+  white = true;
   active = true;
   ticking = true;
   restartUpdates();
@@ -140,19 +146,19 @@ void ChessMode::display() {
     return;
   }
 
-  int leftBlack = secondsLeftBlack();
-  int leftWhite = secondsLeftWhite();
+  // Only the player to move has a running clock
+  int left = white ? secondsLeftWhite() : secondsLeftBlack();
 
-  if ((leftWhite <= 0) || (leftBlack <= 0)) {
+  if (left <= 0) {
     piezoPlay();
     ticking = false;
     over = true;
     // Show the winner
     displayFontDefault();
-    displayPrint(leftWhite <= 0 ? "Black" : "White");
+    displayPrint(white ? "Black" : "White");
   } else if (white) {
-    displayPrintf("< %s", formatMinutes(leftWhite));
+    displayPrintf("< %s", formatMinutes(left));
   } else {
-    displayPrintf("%s >", formatMinutes(leftBlack));
+    displayPrintf("%s >", formatMinutes(left));
   }
 }

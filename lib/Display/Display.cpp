@@ -18,7 +18,6 @@
 MD_Parola myDisplay = MD_Parola(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
 
 static char message[BUF_SIZE];
-static char duration[BUF_SIZE];
 
 void displaySetup()
 {
@@ -68,17 +67,4 @@ void displayBrightness(uint8_t intensity) {
 
 void displayShutdown(bool off) {
     myDisplay.displayShutdown(off);
-}
-
-const char *formatMinutes(unsigned int seconds) {
-    snprintf(duration, BUF_SIZE, "%u:%02u", seconds / 60, seconds % 60);
-    return duration;
-}
-
-const char *formatDuration(unsigned int seconds) {
-    if (seconds < 3600)
-        return formatMinutes(seconds);
-
-    snprintf(duration, BUF_SIZE, "%u:%02u:%02u", seconds / 3600, (seconds % 3600) / 60, seconds % 60);
-    return duration;
 }

@@ -16,10 +16,4 @@ extern void displayFontDefault();
 extern void displayBrightness(uint8_t intensity);
 extern void displayShutdown(bool off);
 
-// Format seconds as m:ss, minutes above 59 are not turned into hours.
-// Returns a shared buffer, so use only one result per displayPrintf.
-extern const char *formatMinutes(unsigned int seconds);
-// Format seconds as h:mm:ss from one hour, otherwise m:ss
-extern const char *formatDuration(unsigned int seconds);
-
 #endif

@@ -15,6 +15,14 @@ To add a mode:
 1. Create `lib/MyMode/MyMode.h` and `.cpp` with a class inheriting from `Mode` and a global instance, e.g. `extern MyMode myMode;`.
 2. Add `&myMode` to `menuItems` in `lib/Menu/Menu.cpp`.
 
+# Tests
+
+Unit tests run on the computer, not the device:
+
+    pio test -e native
+
+Each `test/test_*` folder is a suite. The modes are compiled as they are, while `test/fakes` replaces Arduino, the display and the piezo, so a test can move time forward with `advance(ms)` and check what the display shows. Only libraries listed under `env:native` in `platformio.ini` are built, so add a mode there to test it.
+
 # Hardware
 
 * ESP8266
