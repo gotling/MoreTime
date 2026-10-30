@@ -1,0 +1,32 @@
+# Home Assistant package for moretime-card.js. Change 192.168.1.50 to the
+# address of your device.
+
+rest:
+  - resource: http://192.168.1.50/api/state
+    scan_interval: 5
+    sensor:
+      - name: MoreTime
+        unique_id: moretime_state
+        value_template: "{{ value_json.mode }}"
+        json_attributes:
+          - running
+          - ms
+
+rest_command:
+  moretime_timer_start:
+    url: "http://192.168.1.50/api/timer/start?seconds={{ seconds }}"
+    method: POST
+  moretime_timer_stop:
+    url: http://192.168.1.50/api/timer/stop
+    method: POST
+  moretime_stopwatch_stop:
+    url: http://192.168.1.50/api/stopwatch/stop
+    method: POST
+
+# The time left changes on every poll. To keep it out of the history database,
+# add this to the recorder settings in configuration.yaml:
+#
+# recorder:
+#   exclude:
+#     entities:
+#       - sensor.moretime

@@ -33,6 +33,24 @@ The page uses a small API that also works from automation apps:
 
 For example `curl -X POST "http://moretime-a1b2c3.local/api/timer/start?seconds=300"`.
 
+# Home Assistant
+
+`homeassistant/` has a compact dashboard card. It is one row: the running timer ticking, tap it to stop, and a field where typing minutes (`5`, `1.5` or `1:30`) and pressing Enter starts a new timer.
+
+1. Add the sensor and commands in `moretime.yaml` to Home Assistant, then restart it. Either paste the contents into `configuration.yaml`, merging them into any `rest:` or `rest_command:` sections already there, or keep it as its own file in `config/packages/`. Home Assistant only reads that folder if `configuration.yaml` contains:
+
+        homeassistant:
+          packages: !include_dir_named packages
+
+   Change the address in the file to where your device is reached, for example `http://<device ip>` or its HTTPS address behind a reverse proxy.
+2. Copy `moretime-card.js` to `config/www/` and add `/local/moretime-card.js` as a JavaScript module under Settings → Dashboards → Resources.
+3. Add the card:
+
+        type: custom:moretime-card
+        entity: sensor.moretime
+
+Home Assistant polls the device every 5 seconds and the card counts down between polls, so a timer started on the device shows up within 5 seconds.
+
 # Several devices
 
 Devices on the same network show each other's timer, stopwatch and chess clock. While one is running or paused, the device broadcasts its state over UDP port 4210 every second. Another device showing the clock switches to mirror it, sounds the alarm when it ends and returns to the clock when it stops or nothing is heard for 5 seconds. Pressing a button on the mirroring device returns it to the clock until the next session. All devices run the same firmware, a device without buttons simply only mirrors.
